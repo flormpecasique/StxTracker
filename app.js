@@ -17,7 +17,7 @@ document.getElementById('check-balance').addEventListener('click', async functio
         // Resolver el nombre BNS a una dirección
         address = await resolveBNS(input);
         if (!address) {
-            alert('No se pudo resolver el nombre BNS a una dirección válida.');
+            alert('No se pudo resolver el nombre BNS a una dirección válida. Asegúrate de que el nombre esté registrado.');
             return;
         }
     }
@@ -75,14 +75,20 @@ async function getTransactions(address) {
 
 // Resolver un nombre BNS (ej. flor.btc) a una dirección STX
 async function resolveBNS(name) {
+    if (!name || !name.endsWith('.btc')) {
+        return null; // El nombre no es válido si no termina en '.btc'
+    }
+
     const url = `https://stacks-node-api.mainnet.stacks.co/v2/names/${name}`;
     try {
         const response = await fetch(url);
         const data = await response.json();
         if (data && data.address) {
             return data.address; // Devolver la dirección STX resuelta
+        } else {
+            console.error('No se encontró la dirección para el nombre BNS:', name);
+            return null;
         }
-        return null; // No se pudo resolver el nombre
     } catch (error) {
         console.error('Error al resolver el nombre BNS:', error);
         return null;
