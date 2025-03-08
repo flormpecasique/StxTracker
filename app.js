@@ -57,7 +57,7 @@ async function getTransactions(address) {
             const txTimestamp = new Date(tx.block_time); // Fecha de la transacción
             const currentTimestamp = new Date();
             const timeDifference = currentTimestamp - txTimestamp; // Diferencia de tiempo
-            return timeDifference <= 24 * 60 * 60 * 1000; // 24 horas en milisegundos
+            return timeDifference <= 72 * 60 * 60 * 1000; // 72 horas en milisegundos
         });
 
         return recentTransactions;
