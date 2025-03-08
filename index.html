@@ -1,37 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STX Balance & Transactions Tracker</title>
+    <title>Consultar STX Wallet</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>STX Balance & Transactions Tracker</h1>
-            <p>Consulta el saldo y las transacciones de tu dirección Stacks de manera sencilla.</p>
-        </header>
-        
-        <section class="input-section">
-            <input type="text" id="stx-address" placeholder="Ingresa tu dirección de Stacks" />
+        <h1>Consulta tu saldo y transacciones de STX</h1>
+        <div class="input-container">
+            <input type="text" id="stx-address" placeholder="Ingresa tu dirección STX" />
             <button id="check-balance">Consultar</button>
-        </section>
-        
-        <section class="results-section">
-            <div id="balance-container">
-                <h2>Saldo STX</h2>
-                <p id="balance">---</p>
-            </div>
-            <div id="transactions-container">
-                <h2>Transacciones recientes</h2>
-                <ul id="transactions-list">
-                    <!-- Transacciones aparecerán aquí -->
-                </ul>
-            </div>
-        </section>
-    </div>
+        </div>
+        <div class="results">
+            <h2>Saldo STX</h2>
+            <p id="balance"></p>
 
+            <h2>Transacciones Recientes</h2>
+            <ul id="transactions-list"></ul>
+        </div>
+    </div>
     <script src="app.js"></script>
 </body>
 </html>
