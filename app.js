@@ -1,26 +1,14 @@
 document.getElementById('check-balance').addEventListener('click', async function() {
-    const input = document.getElementById('stx-address').value.trim();
+    const address = document.getElementById('stx-address').value.trim();
     
-    if (!input) {
-        alert('Por favor, ingresa una dirección de billetera STX válida o un nombre BNS.');
+    if (!address) {
+        alert('Por favor, ingresa una dirección de billetera STX válida.');
         return;
     }
 
     // Limpiar resultados previos
     document.getElementById('balance').innerText = '';
     document.getElementById('transactions-list').innerHTML = '';
-
-    let address = input;
-
-    // Si el input es un nombre BNS (tiene el formato 'nombre.btc')
-    if (input.includes('.btc')) {
-        // Resolver el nombre BNS a una dirección
-        address = await resolveBNS(input);
-        if (!address) {
-            alert('No se pudo resolver el nombre BNS a una dirección válida. Asegúrate de que el nombre esté registrado.');
-            return;
-        }
-    }
 
     // Consultar el balance
     const balance = await getBalance(address);
@@ -70,28 +58,6 @@ async function getTransactions(address) {
     } catch (error) {
         console.error('Error al obtener las transacciones:', error);
         return [];
-    }
-}
-
-// Resolver un nombre BNS (ej. flor.btc) a una dirección STX
-async function resolveBNS(name) {
-    if (!name || !name.endsWith('.btc')) {
-        return null; // El nombre no es válido si no termina en '.btc'
-    }
-
-    const url = `https://stacks-node-api.mainnet.stacks.co/v2/names/${name}`;
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-        if (data && data.address) {
-            return data.address; // Devolver la dirección STX resuelta
-        } else {
-            console.error('No se encontró la dirección para el nombre BNS:', name);
-            return null;
-        }
-    } catch (error) {
-        console.error('Error al resolver el nombre BNS:', error);
-        return null;
     }
 }
 
