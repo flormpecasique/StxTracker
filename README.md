@@ -1,0 +1,1 @@
+Es una plataforma de consulta y seguimiento del saldo y transacciones de los usuarios de Stacks. Orientada a usuarios que usan Stacks (STX), que necesitan de forma rápida y accesible consultar su saldo y el historial de sus transacciones sin la necesidad de entrar a un explorador de bloques o usar aplicaciones más complejas.
