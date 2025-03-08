@@ -50,7 +50,17 @@ async function getTransactions(address) {
     try {
         const response = await fetch(url);
         const data = await response.json();
-        return data.results || []; // Devolver transacciones o un array vacío
+        const transactions = data.results || []; // Obtener transacciones o un array vacío
+
+        // Filtrar transacciones para las últimas 24 horas
+        const recentTransactions = transactions.filter(tx => {
+            const txTimestamp = new Date(tx.block_time); // Fecha de la transacción
+            const currentTimestamp = new Date();
+            const timeDifference = currentTimestamp - txTimestamp; // Diferencia de tiempo
+            return timeDifference <= 24 * 60 * 60 * 1000; // 24 horas en milisegundos
+        });
+
+        return recentTransactions;
     } catch (error) {
         console.error('Error al obtener las transacciones:', error);
         return [];
