@@ -51,21 +51,23 @@ header p {
     border-radius: 5px;
     font-size: 1rem;
     margin-right: 10px;
+    margin-bottom: 20px; /* Espacio entre el input y el botón */
 }
 
+/* Estilo del botón */
 #check-balance {
     padding: 10px 20px;
     font-size: 1rem;
     border: none;
     border-radius: 5px;
-    background-color: #4f9ad0;
+    background-color: #9b4dca; /* Violeta de Stacks */
     color: white;
     cursor: pointer;
     transition: background-color 0.3s;
 }
 
 #check-balance:hover {
-    background-color: #378f7f;
+    background-color: #7a36a3; /* Violeta más oscuro al hacer hover */
 }
 
 /* Contenedores de resultados */
