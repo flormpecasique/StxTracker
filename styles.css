@@ -1,112 +1,76 @@
-/* Reset de márgenes y padding */
-* {
+/* Estilos base */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #F1F1F1;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-}
-
-/* Fondo y diseño general */
-body {
-    font-family: 'Inter', sans-serif;
-    background-color: #f7f8fa; /* Fondo claro, neutro */
-    color: #333;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    height: 100vh;
+    color: #333;
 }
 
-/* Contenedor principal */
 .container {
-    background-color: white;
-    border-radius: 12px;
-    padding: 30px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 600px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 400px;
     text-align: center;
 }
 
-/* Header */
-header h1 {
-    font-size: 2.2rem;
-    color: #4a4a4a; /* Gris oscuro para mejor contraste */
-    margin-bottom: 15px;
-    font-weight: 600;
-}
-
-header p {
-    font-size: 1.1rem;
-    color: #6f6f6f; /* Gris suave */
-}
-
-/* Estilo del input */
-.input-section {
-    margin: 20px 0;
-}
-
-#stx-address {
-    padding: 12px;
-    width: 80%;
-    border: 2px solid #e1e4e8; /* Gris claro para el borde */
-    border-radius: 8px;
-    font-size: 1rem;
-    margin-bottom: 20px; /* Espacio entre el input y el botón */
-    background-color: #fafafa; /* Fondo suave en el input */
-}
-
-/* Estilo del botón */
-#check-balance {
-    padding: 12px 20px;
-    font-size: 1rem;
-    border: none;
-    border-radius: 8px;
-    background-color: #6a49e4; /* Violeta suave que se asocia con Stacks */
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s ease-in-out;
-    font-weight: 600;
-}
-
-#check-balance:hover {
-    background-color: #5a40c0; /* Violeta más oscuro en hover */
-    transform: translateY(-2px); /* Efecto sutil al hacer hover */
-}
-
-/* Contenedores de resultados */
-.results-section {
-    margin-top: 30px;
-    text-align: left;
-}
-
-#balance-container, #transactions-container {
+h1 {
+    font-size: 24px;
+    color: #4c63b6;
     margin-bottom: 20px;
 }
 
-#balance-container h2, #transactions-container h2 {
-    font-size: 1.3rem;
-    color: #333;
-    font-weight: 600;
+.input-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
 }
 
-#balance {
-    font-size: 1.8rem;
-    color: #6a49e4; /* Violeta que corresponde a la marca de Stacks */
-    font-weight: bold;
+input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 10px;
+    width: 250px;
 }
 
-#transactions-list {
+button {
+    background-color: #8A4FFF; /* Color violeta Stacks */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #7e3aef;
+}
+
+.results {
+    margin-top: 20px;
+    text-align: left;
+}
+
+h2 {
+    font-size: 18px;
+    color: #4c63b6;
+    margin-bottom: 10px;
+}
+
+ul {
     list-style-type: none;
     padding: 0;
 }
 
-#transactions-list li {
-    font-size: 1rem;
-    color: #555;
-    border-bottom: 1px solid #ddd;
-    padding: 8px 0;
-}
-
-#transactions-list li:last-child {
-    border-bottom: none;
+li {
+    padding: 5px 0;
+    font-size: 14px;
 }
