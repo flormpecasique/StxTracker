@@ -20,19 +20,22 @@ document.getElementById('check-balance').addEventListener('click', async functio
 
     // Consultar las transacciones recientes
     const transactions = await getTransactions(address);
-    if (transactions.length > 0) {
+    const recentTransactions = filterRecentTransactions(transactions);
+
+    if (recentTransactions.length > 0) {
         const transactionsList = document.getElementById('transactions-list');
-        transactions.forEach(tx => {
+        recentTransactions.forEach(tx => {
             const listItem = document.createElement('li');
-            listItem.textContent = `Tx ID: ${tx.tx_id}, Block: ${tx.block_height}`;
+            listItem.textContent = `Tx ID: ${tx.tx_id}, Block: ${tx.block_height}, Fecha: ${new Date(tx.block_time * 1000).toLocaleString()}`;
             transactionsList.appendChild(listItem);
         });
     } else {
         const transactionsList = document.getElementById('transactions-list');
-        transactionsList.innerHTML = '<li>No se encontraron transacciones recientes.</li>';
+        transactionsList.innerHTML = '<li>No se encontraron transacciones recientes en las últimas 72 horas.</li>';
     }
 });
 
+// Obtener el balance de la dirección
 async function getBalance(address) {
     const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}`;
     try {
@@ -45,24 +48,26 @@ async function getBalance(address) {
     }
 }
 
+// Obtener las transacciones de la dirección
 async function getTransactions(address) {
     const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}/transactions`;
     try {
         const response = await fetch(url);
         const data = await response.json();
-        const transactions = data.results || []; // Obtener transacciones o un array vacío
-
-        // Filtrar transacciones para las últimas 24 horas
-        const recentTransactions = transactions.filter(tx => {
-            const txTimestamp = new Date(tx.block_time); // Fecha de la transacción
-            const currentTimestamp = new Date();
-            const timeDifference = currentTimestamp - txTimestamp; // Diferencia de tiempo
-            return timeDifference <= 72 * 60 * 60 * 1000; // 72 horas en milisegundos
-        });
-
-        return recentTransactions;
+        return data.results || []; // Devolver transacciones o un array vacío
     } catch (error) {
         console.error('Error al obtener las transacciones:', error);
         return [];
     }
+}
+
+// Filtrar transacciones que ocurrieron en las últimas 72 horas
+function filterRecentTransactions(transactions) {
+    const now = Date.now(); // Tiempo actual en milisegundos
+    const seventyTwoHoursInMs = 72 * 60 * 60 * 1000; // 72 horas en milisegundos
+    
+    return transactions.filter(tx => {
+        const txTime = tx.block_time * 1000; // Convertir el tiempo del bloque a milisegundos
+        return now - txTime <= seventyTwoHoursInMs; // Filtrar transacciones de las últimas 72 horas
+    });
 }
