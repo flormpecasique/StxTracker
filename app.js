@@ -1,14 +1,26 @@
 document.getElementById('check-balance').addEventListener('click', async function() {
-    const address = document.getElementById('stx-address').value.trim();
+    const input = document.getElementById('stx-address').value.trim();
     
-    if (!address) {
-        alert('Por favor, ingresa una dirección de billetera STX válida.');
+    if (!input) {
+        alert('Por favor, ingresa una dirección de billetera STX válida o un nombre BNS.');
         return;
     }
 
     // Limpiar resultados previos
     document.getElementById('balance').innerText = '';
     document.getElementById('transactions-list').innerHTML = '';
+
+    let address = input;
+
+    // Si el input es un nombre BNS (tiene el formato 'nombre.btc')
+    if (input.includes('.btc')) {
+        // Resolver el nombre BNS a una dirección
+        address = await resolveBNS(input);
+        if (!address) {
+            alert('No se pudo resolver el nombre BNS a una dirección válida.');
+            return;
+        }
+    }
 
     // Consultar el balance
     const balance = await getBalance(address);
@@ -58,6 +70,22 @@ async function getTransactions(address) {
     } catch (error) {
         console.error('Error al obtener las transacciones:', error);
         return [];
+    }
+}
+
+// Resolver un nombre BNS (ej. flor.btc) a una dirección STX
+async function resolveBNS(name) {
+    const url = `https://stacks-node-api.mainnet.stacks.co/v2/names/${name}`;
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        if (data && data.address) {
+            return data.address; // Devolver la dirección STX resuelta
+        }
+        return null; // No se pudo resolver el nombre
+    } catch (error) {
+        console.error('Error al resolver el nombre BNS:', error);
+        return null;
     }
 }
 
