@@ -11,8 +11,8 @@ body {
     background-color: #f7f8fa; /* Fondo claro, neutro */
     color: #333;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;  /* Coloca los elementos en columna */
+    justify-content: space-between;  /* Asegura que el footer esté al fondo */
     min-height: 100vh;
 }
 
@@ -25,6 +25,7 @@ body {
     width: 100%;
     max-width: 600px;
     text-align: center;
+    flex-grow: 1;  /* Asegura que ocupe el espacio disponible */
 }
 
 /* Header */
@@ -100,11 +101,11 @@ header p {
     font-weight: 500;
 }
 
+/* Footer siempre al final de la página */
 footer {
     text-align: center;
     font-size: 0.8rem;
-    color: #ccc; /* Gris claro */
-    margin-top: 20px;
-    padding: 10px;
+    color: #c0c0c0; /* Gris muy claro */
+    padding: 10px 0;
+    width: 100%;
 }
-
