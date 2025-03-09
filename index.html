@@ -1,38 +1,36 @@
 <!DOCTYPE html>
-<html lang="en"> <!-- Cambiar el idioma a inglés -->
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>STX Balance Tracker</title>
+    <title>Check STX Balance</title> <!-- Título en inglés -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>STX Balance</h1>
-            <p>Check your STX balance quickly and easily.</p>
+            <h1>STX Balance</h1> <!-- Título principal en inglés -->
+            <p>Check the balance of any Stacks address!</p> <!-- Subtítulo traducido -->
         </header>
         
-        <div class="input-section">
-            <label for="stx-address">STX Address</label>
-            <input type="text" id="stx-address" placeholder="Enter your STX address">
-            <button id="check-balance">Check Balance</button>
-        </div>
+        <section class="input-section">
+            <input type="text" id="stx-address" placeholder="Enter your Stacks address" /> <!-- Texto de entrada traducido -->
+            <button id="check-balance">Check Balance</button> <!-- Botón traducido -->
+        </section>
         
-        <div class="results-section">
+        <section class="results-section">
             <div id="balance-container">
-                <h2>STX Balance</h2>
-                <div id="balance">0 STX</div>
-                <div class="balance-usd">$0.00</div>
+                <h2>STX Balance</h2> <!-- Resultado en inglés -->
+                <p id="balance">---</p>
+                <p id="balance-usd" class="balance-usd">---</p> <!-- Resultado USD, si es necesario -->
             </div>
-        </div>
-    </div>
-    
+        </section>
+    </div> <!-- Cierre correcto del contenedor -->
+
     <footer>
-        <p>© 2025 STX Balance Tracker by flor.btc. All rights reserved.</p>
+        <p>&copy; <span id="year"></span> STX Balance by flor.btc | All rights reserved.</p> <!-- Texto del footer traducido -->
     </footer>
-    
+
     <script src="app.js"></script>
-</body>
-</html>
+    <script>
+        document.getElementById('year').textContent = new Date
