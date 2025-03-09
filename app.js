@@ -1,6 +1,6 @@
 document.getElementById('check-balance').addEventListener('click', async function() {
     const address = document.getElementById('stx-address').value.trim();
-    
+
     if (!address) {
         alert('Por favor, ingresa una dirección de billetera STX válida.');
         return;
@@ -10,8 +10,19 @@ document.getElementById('check-balance').addEventListener('click', async functio
     document.getElementById('balance').innerText = '';
     document.getElementById('transactions-list').innerHTML = '';
 
+    // Verificar si la dirección es BNS (termina en .btc)
+    let actualAddress = address;
+    if (address.endsWith('.btc')) {
+        const bnsAddress = await getBnsAddress(address);
+        if (!bnsAddress) {
+            alert('No se pudo resolver la dirección BNS.');
+            return;
+        }
+        actualAddress = bnsAddress;
+    }
+
     // Consultar el balance
-    const balance = await getBalance(address);
+    const balance = await getBalance(actualAddress);
     if (balance !== null) {
         document.getElementById('balance').innerText = `${balance} STX`;
     } else {
@@ -19,7 +30,7 @@ document.getElementById('check-balance').addEventListener('click', async functio
     }
 
     // Consultar las transacciones recientes
-    const transactions = await getTransactions(address);
+    const transactions = await getTransactions(actualAddress);
     const recentTransactions = filterRecentTransactions(transactions);
 
     if (recentTransactions.length > 0) {
@@ -50,9 +61,11 @@ async function getBalance(address) {
 
 // Obtener las transacciones de la dirección
 async function getTransactions(address) {
-    const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}/transactions`;
+    const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}/transactions?limit=100`;
     try {
-        const response = await fetch(url);
+        const response = await fetch(url, {
+            headers: { 'Cache-Control': 'no-cache' }
+        });
         const data = await response.json();
         return data.results || []; // Devolver transacciones o un array vacío
     } catch (error) {
@@ -67,7 +80,24 @@ function filterRecentTransactions(transactions) {
     const seventyTwoHoursInMs = 72 * 60 * 60 * 1000; // 72 horas en milisegundos
     
     return transactions.filter(tx => {
+        if (!tx.block_time) {
+            return false; // Si no hay block_time, no considerarla
+        }
+
         const txTime = tx.block_time * 1000; // Convertir el tiempo del bloque a milisegundos
         return now - txTime <= seventyTwoHoursInMs; // Filtrar transacciones de las últimas 72 horas
     });
+}
+
+// Resolver dirección BNS (.btc) a dirección STX
+async function getBnsAddress(bnsAddress) {
+    const url = `https://stacks-node-api.mainnet.stacks.co/v2/names/${bnsAddress}`;
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        return data.address; // Devolver la dirección STX correspondiente
+    } catch (error) {
+        console.error('Error al resolver la dirección BNS:', error);
+        return null;
+    }
 }
