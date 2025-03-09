@@ -3,34 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Check STX Balance</title> <!-- Título en inglés -->
+    <title>Check STX Balance</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>STX Balance</h1> <!-- Título principal en inglés -->
-            <p>Check the balance of any Stacks address!</p> <!-- Subtítulo traducido -->
+            <h1>STX Balance</h1>
+            <p>Check the balance of any Stacks address!</p>
         </header>
         
         <section class="input-section">
-            <input type="text" id="stx-address" placeholder="Enter your Stacks address" /> <!-- Texto de entrada traducido -->
-            <button id="check-balance">Check Balance</button> <!-- Botón traducido -->
+            <input type="text" id="stx-address" placeholder="Enter your Stacks address" />
+            <button id="check-balance">Check Balance</button>
         </section>
         
         <section class="results-section">
             <div id="balance-container">
-                <h2>STX Balance</h2> <!-- Resultado en inglés -->
+                <h2>STX Balance</h2>
                 <p id="balance">---</p>
-                <p id="balance-usd" class="balance-usd">---</p> <!-- Resultado USD, si es necesario -->
+                <p id="balance-usd" class="balance-usd">---</p>
             </div>
         </section>
-    </div> <!-- Cierre correcto del contenedor -->
+    </div>
 
     <footer>
-        <p>&copy; <span id="year"></span> STX Balance by flor.btc | All rights reserved.</p> <!-- Texto del footer traducido -->
+        <p>&copy; <span id="year"></span> STX Balance by flor.btc | All rights reserved.</p>
     </footer>
 
     <script src="app.js"></script>
     <script>
-        document.getElementById('year').textContent = new Date
+        document.getElementById('year').textContent = new Date().getFullYear(); <!-- Completar el código -->
+    </script>
+</body>
+</html>
