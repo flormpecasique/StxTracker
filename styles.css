@@ -91,3 +91,12 @@ header p {
     color: #6a49e4; /* Violeta que corresponde a la marca de Stacks */
     font-weight: bold;
 }
+
+/* Estilo para el valor en USD */
+.balance-usd {
+    font-size: 1.2rem;
+    color: #4a4a4a;
+    margin-top: 5px;
+    font-weight: 500;
+}
+
