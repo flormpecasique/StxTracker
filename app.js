@@ -1,3 +1,5 @@
+const apiKey = '1ee69b2df4b41e0cf5c575938930f766';  // Tu API Key de Hiro
+
 document.getElementById('check-balance').addEventListener('click', async function() {
     const address = document.getElementById('stx-address').value.trim();
 
@@ -54,7 +56,11 @@ document.getElementById('check-balance').addEventListener('click', async functio
 async function getBalance(address) {
     const url = `https://api.hiro.so/v1/accounts/${address}`;
     try {
-        const response = await fetch(url);
+        const response = await fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${apiKey}`  // Usar tu API Key en la cabecera
+            }
+        });
         const data = await response.json();
         console.log('Datos del balance:', data);
         if (data.balance !== undefined) {
@@ -73,7 +79,12 @@ async function getBalance(address) {
 async function getTransactions(address) {
     const url = `https://api.hiro.so/v1/accounts/${address}/transactions?limit=100`;
     try {
-        const response = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } });
+        const response = await fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${apiKey}`,  // Usar tu API Key en la cabecera
+                'Cache-Control': 'no-cache'
+            }
+        });
         const data = await response.json();
         console.log('Datos de transacciones:', data);
         return data.results || []; // Devolver transacciones o un array vacío
