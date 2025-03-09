@@ -18,6 +18,12 @@ body {
     padding: 40px 0; /* Espaciado superior e inferior para no pegar el contenido */
 }
 
+/* Definimos el violeta principal para usarse en toda la página */
+:root {
+    --violeta-principal: #6a49e4; /* Violeta para título, botones y resultados */
+    --violeta-oscuro: #4a2c72; /* Violeta oscuro para hover */
+}
+
 /* Contenedor principal */
 .container {
     background-color: white;
@@ -33,7 +39,7 @@ body {
 /* Header */
 header h1 {
     font-size: 2.5rem; /* Aumentamos el tamaño del título */
-    color: #5b3b8e; /* Violeta sutil */
+    color: var(--violeta-principal); /* Usamos el violeta principal */
     margin-bottom: 20px;
     margin-top: 30px;
     font-weight: 700; /* Peso más fuerte para un buen contraste */
@@ -66,7 +72,7 @@ header p {
     font-size: 1rem;
     border: none;
     border-radius: 8px;
-    background-color: #6a49e4; /* Violeta suave que se asocia con Stacks */
+    background-color: var(--violeta-principal); /* Usamos el violeta principal para el botón */
     color: white;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.2s ease-in-out;
@@ -74,9 +80,8 @@ header p {
     margin-top: 10px; /* Se agrega margen superior al botón */
 }
 
-
 #check-balance:hover {
-    background-color: #4a2c72; /* Violeta más oscuro al pasar el ratón */
+    background-color: var(--violeta-oscuro); /* Usamos el violeta oscuro para hover */
     transform: translateY(-2px);
 }
 
@@ -88,13 +93,13 @@ header p {
 
 #balance-container h2 {
     font-size: 1.5rem;
-    color: #333;
+    color: var(--violeta-principal); /* Usamos el violeta principal para el resultado */
     font-weight: 600;
 }
 
 #balance {
     font-size: 2rem;
-    color: #5b3b8e;
+    color: var(--violeta-principal); /* Usamos el violeta principal para el balance */
     font-weight: 700;
 }
 
@@ -124,11 +129,11 @@ footer p {
 
 footer a {
     text-decoration: none;            /* Quitar subrayado de los enlaces */
-    color: #6a49e4;                   /* Violeta suave */
+    color: var(--violeta-principal);  /* Violeta principal para los enlaces */
     font-weight: 600;                 /* Resaltar los enlaces */
 }
 
 footer a:hover {
-    color: #5a40c0;                   /* Violeta más oscuro en hover */
+    color: var(--violeta-oscuro);     /* Violeta más oscuro en hover */
     text-decoration: underline;       /* Subrayado en hover */
 }
