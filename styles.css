@@ -7,40 +7,41 @@
 
 /* Fondo y diseño general */
 body {
-    font-family: 'Inter', sans-serif;
-    background-color: #f7f8fa; /* Fondo claro, neutro */
+    font-family: 'Roboto', sans-serif; /* Similar a Hiro, moderna y limpia */
+    background-color: #f1f3f6; /* Color de fondo más claro y suave */
     color: #333;
     display: flex;
-    justify-content: center; /* Centra el contenedor horizontalmente */
-    align-items: center; /* Centra el contenedor verticalmente */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     min-height: 100vh;
-    flex-direction: column; /* Asegura que el contenido esté alineado de arriba a abajo */
+    padding: 40px 0; /* Espaciado superior e inferior para no pegar el contenido */
 }
 
 /* Contenedor principal */
 .container {
     background-color: white;
-    border-radius: 12px;
-    padding: 30px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 16px; /* Bordes más redondeados para un toque moderno */
+    padding: 40px; /* Más espacio interno */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Sombra más suave */
     width: 100%;
     max-width: 600px;
     text-align: center;
-    margin-bottom: 20px; /* Añadimos algo de espacio entre el contenedor y el footer */
+    margin-top: 40px; /* Espaciado superior para evitar que el contenedor esté pegado al borde */
 }
 
 /* Header */
 header h1 {
-    font-size: 2.2rem;
-    color: #4a4a4a; /* Gris oscuro para mejor contraste */
+    font-size: 2.5rem; /* Aumentamos el tamaño del título */
+    color: #5b3b8e; /* Violeta sutil */
     margin-bottom: 20px;
-    margin-top: 25px; /* Ajusta este valor según lo necesites */
-    font-weight: 600;
+    font-weight: 700; /* Peso más fuerte para un buen contraste */
 }
 
 header p {
-    font-size: 1.1rem;
-    color: #6f6f6f; /* Gris suave */
+    font-size: 1.2rem;
+    color: #6c6c6c; /* Gris suave */
+    margin-bottom: 30px; /* Espaciado adicional para separar el título */
 }
 
 /* Estilo del input */
@@ -49,83 +50,67 @@ header p {
 }
 
 #stx-address {
-    padding: 12px;
-    width: 80%;
-    border: 2px solid #e1e4e8; /* Gris claro para el borde */
-    border-radius: 8px;
-    font-size: 1rem;
-    margin-bottom: 20px; /* Espacio entre el input y el botón */
-    background-color: #fafafa; /* Fondo suave en el input */
+    padding: 15px;
+    width: 90%; /* Hacemos el input un poco más ancho */
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    background-color: #fafafa;
 }
 
 /* Estilo del botón */
 #check-balance {
-    padding: 12px 20px;
-    font-size: 1rem;
+    padding: 15px 25px;
+    font-size: 1.1rem;
     border: none;
-    border-radius: 8px;
-    background-color: #6a49e4; /* Violeta suave que se asocia con Stacks */
+    border-radius: 12px;
+    background-color: #5b3b8e; /* El mismo tono de violeta */
     color: white;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.2s ease-in-out;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 #check-balance:hover {
-    background-color: #5a40c0; /* Violeta más oscuro en hover */
-    transform: translateY(-2px); /* Efecto sutil al hacer hover */
+    background-color: #4a2c72; /* Violeta más oscuro al pasar el ratón */
+    transform: translateY(-2px);
 }
 
 /* Contenedor de resultados */
 .results-section {
-    margin-top: 30px;
+    margin-top: 40px;
     text-align: center;
 }
 
 #balance-container h2 {
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     color: #333;
     font-weight: 600;
 }
 
 #balance {
-    font-size: 1.8rem;
-    color: #6a49e4; /* Violeta que corresponde a la marca de Stacks */
-    font-weight: bold;
+    font-size: 2rem;
+    color: #5b3b8e;
+    font-weight: 700;
 }
 
 /* Estilo para el valor en USD */
 .balance-usd {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     color: #4a4a4a;
-    margin-top: 5px;
+    margin-top: 8px;
     font-weight: 500;
 }
 
 /* Footer siempre al final de la página */
 footer {
     text-align: center;
-    font-size: 0.9rem; /* Aumentamos un poco el tamaño para mejor legibilidad */
-    color: #8a8a8a; /* Gris oscuro suave */
-    padding: 30px 0 10px 0; /* Espaciado superior aumentado para más "respiro" */
+    font-size: 1rem;
+    color: #a5a5a5; /* Gris suave */
+    padding: 20px 0;
     width: 100%;
-    background-color: #f7f8fa; /* Fondo gris suave, igual al del body */
-    margin-top: auto; /* Asegura que el footer esté siempre abajo */
-}
-
-/* Enlaces */
-footer a {
-    color: #6a49e4;
-    text-decoration: none;
-    font-weight: 600;
-    transition: color 0.3s ease;
-}
-
-footer a:hover {
-    color: #5a40c0;
-}
-
-/* Estilo para el año (footer) */
-#year {
-    font-weight: bold;
+    margin-top: 40px;
+    background-color: #fff; /* Fondo blanco para separar el footer */
+    border-top: 1px solid #ddd; /* Línea sutil en el borde superior */
 }
