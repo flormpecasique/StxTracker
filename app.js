@@ -2,7 +2,7 @@ document.getElementById('check-balance').addEventListener('click', async functio
     const address = document.getElementById('stx-address').value.trim();
 
     if (!address) {
-        alert('Por favor, ingresa una dirección de billetera STX o BNS válida.');
+        alert('Por favor, ingresa una dirección de billetera STX válida.');
         return;
     }
 
@@ -10,21 +10,18 @@ document.getElementById('check-balance').addEventListener('click', async functio
     document.getElementById('balance').innerText = '';
     document.getElementById('transactions-list').innerHTML = '';
 
+    // Verificar si la dirección es BNS (termina en .btc)
     let actualAddress = address;
     if (address.endsWith('.btc')) {
-        // Resolver la dirección BNS
-        console.log(`Resolviendo BNS: ${address}`);
-        const resolvedAddress = await resolveBnsAddress(address);
-        if (!resolvedAddress) {
+        const bnsAddress = await getBnsAddress(address);
+        if (!bnsAddress) {
             alert('No se pudo resolver la dirección BNS.');
             return;
         }
-        console.log(`Dirección resuelta de BNS: ${resolvedAddress}`);
-        actualAddress = resolvedAddress;
+        actualAddress = bnsAddress;
     }
 
     // Consultar el balance
-    console.log(`Consultando saldo para la dirección STX: ${actualAddress}`);
     const balance = await getBalance(actualAddress);
     if (balance !== null) {
         document.getElementById('balance').innerText = `${balance} STX`;
@@ -33,7 +30,6 @@ document.getElementById('check-balance').addEventListener('click', async functio
     }
 
     // Consultar las transacciones recientes
-    console.log(`Consultando transacciones para la dirección STX: ${actualAddress}`);
     const transactions = await getTransactions(actualAddress);
     const recentTransactions = filterRecentTransactions(transactions);
 
@@ -56,13 +52,7 @@ async function getBalance(address) {
     try {
         const response = await fetch(url);
         const data = await response.json();
-        console.log('Datos del balance:', data);
-        if (data.balance !== undefined) {
-            return data.balance / 1000000; // Convertir satoshis a STX
-        } else {
-            console.error('Error al obtener el balance:', data);
-            return null;
-        }
+        return data.balance / 1000000; // Convertir satoshis a STX
     } catch (error) {
         console.error('Error al obtener el balance:', error);
         return null;
@@ -73,9 +63,10 @@ async function getBalance(address) {
 async function getTransactions(address) {
     const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}/transactions?limit=100`;
     try {
-        const response = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } });
+        const response = await fetch(url, {
+            headers: { 'Cache-Control': 'no-cache' }
+        });
         const data = await response.json();
-        console.log('Datos de transacciones:', data);
         return data.results || []; // Devolver transacciones o un array vacío
     } catch (error) {
         console.error('Error al obtener las transacciones:', error);
@@ -98,19 +89,13 @@ function filterRecentTransactions(transactions) {
     });
 }
 
-// Resolver la dirección BNS a dirección STX
-async function resolveBnsAddress(bnsAddress) {
+// Resolver dirección BNS (.btc) a dirección STX
+async function getBnsAddress(bnsAddress) {
     const url = `https://stacks-node-api.mainnet.stacks.co/v2/names/${bnsAddress}`;
     try {
         const response = await fetch(url);
         const data = await response.json();
-        console.log('Datos de resolución de BNS:', data);
-        if (data.address) {
-            return data.address; // Devolver la dirección STX correspondiente
-        } else {
-            console.error('No se resolvió la dirección BNS correctamente:', data);
-            return null;
-        }
+        return data.address; // Devolver la dirección STX correspondiente
     } catch (error) {
         console.error('Error al resolver la dirección BNS:', error);
         return null;
