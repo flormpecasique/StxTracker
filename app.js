@@ -95,7 +95,12 @@ async function getBnsAddress(bnsAddress) {
     try {
         const response = await fetch(url);
         const data = await response.json();
-        return data.address; // Devolver la dirección STX correspondiente
+        if (data.address) {
+            return data.address; // Devolver la dirección STX correspondiente
+        } else {
+            console.error('No se resolvió la dirección BNS correctamente.');
+            return null;
+        }
     } catch (error) {
         console.error('Error al resolver la dirección BNS:', error);
         return null;
