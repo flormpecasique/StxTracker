@@ -14,7 +14,6 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    padding: 20px; /* Agregado para mejorar en pantallas pequeñas */
 }
 
 /* Contenedor principal */
@@ -32,34 +31,28 @@ body {
 header h1 {
     font-size: 2.2rem;
     color: #4a4a4a; /* Gris oscuro para mejor contraste */
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     font-weight: 600;
 }
 
 header p {
     font-size: 1.1rem;
     color: #6f6f6f; /* Gris suave */
-    margin-bottom: 20px;
 }
 
 /* Estilo del input */
 .input-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 25px;
+    margin: 20px 0;
 }
 
 #stx-address {
     padding: 12px;
-    width: 100%; /* Ocupar todo el ancho disponible */
-    max-width: 400px; /* Máximo tamaño para no ser excesivamente grande */
+    width: 80%;
     border: 2px solid #e1e4e8; /* Gris claro para el borde */
     border-radius: 8px;
     font-size: 1rem;
-    margin-bottom: 12px; /* Más espacio con el botón */
+    margin-bottom: 20px; /* Espacio entre el input y el botón */
     background-color: #fafafa; /* Fondo suave en el input */
-    text-align: center;
 }
 
 /* Estilo del botón */
@@ -73,8 +66,6 @@ header p {
     cursor: pointer;
     transition: background-color 0.3s, transform 0.2s ease-in-out;
     font-weight: 600;
-    width: 100%;
-    max-width: 200px;
 }
 
 #check-balance:hover {
@@ -90,25 +81,20 @@ header p {
 
 #balance-container, #transactions-container {
     margin-bottom: 20px;
-    padding: 15px;
-    background: #f9f9fb;
-    border-radius: 8px;
 }
 
 #balance-container h2, #transactions-container h2 {
     font-size: 1.3rem;
     color: #333;
     font-weight: 600;
-    margin-bottom: 10px;
 }
 
 #balance {
     font-size: 1.8rem;
-    color: #6a49e4; /* Violeta de Stacks */
+    color: #6a49e4; /* Violeta que corresponde a la marca de Stacks */
     font-weight: bold;
 }
 
-/* Lista de transacciones */
 #transactions-list {
     list-style-type: none;
     padding: 0;
@@ -119,38 +105,8 @@ header p {
     color: #555;
     border-bottom: 1px solid #ddd;
     padding: 8px 0;
-    display: flex;
-    flex-direction: column;
-}
-
-/* Diferenciar visualmente el ID de la transacción */
-#transactions-list li span.tx-id {
-    color: #6a49e4;
-    font-weight: bold;
-    font-size: 0.9rem;
-    word-break: break-all; /* Evita desbordes en pantallas pequeñas */
 }
 
 #transactions-list li:last-child {
     border-bottom: none;
-}
-
-/* Responsive */
-@media (max-width: 480px) {
-    header h1 {
-        font-size: 1.8rem;
-    }
-
-    #stx-address {
-        font-size: 0.95rem;
-    }
-
-    #check-balance {
-        font-size: 0.95rem;
-        padding: 10px;
-    }
-
-    #balance {
-        font-size: 1.6rem;
-    }
 }
