@@ -50,9 +50,9 @@ document.getElementById('check-balance').addEventListener('click', async functio
     }
 });
 
-// Obtener el balance de la dirección
+// Obtener el balance de la dirección (usando la API de Hiro)
 async function getBalance(address) {
-    const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}`;
+    const url = `https://api.hiro.so/v1/accounts/${address}`;
     try {
         const response = await fetch(url);
         const data = await response.json();
@@ -69,9 +69,9 @@ async function getBalance(address) {
     }
 }
 
-// Obtener las transacciones de la dirección
+// Obtener las transacciones de la dirección (usando la API de Hiro)
 async function getTransactions(address) {
-    const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}/transactions?limit=100`;
+    const url = `https://api.hiro.so/v1/accounts/${address}/transactions?limit=100`;
     try {
         const response = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } });
         const data = await response.json();
@@ -98,9 +98,9 @@ function filterRecentTransactions(transactions) {
     });
 }
 
-// Resolver la dirección BNS a dirección STX
+// Resolver la dirección BNS a dirección STX (usando la API de Hiro)
 async function resolveBnsAddress(bnsAddress) {
-    const url = `https://stacks-node-api.mainnet.stacks.co/v2/names/${bnsAddress}`;
+    const url = `https://api.hiro.so/v1/names/${bnsAddress}`;
     try {
         const response = await fetch(url);
         const data = await response.json();
