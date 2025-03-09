@@ -2,46 +2,46 @@ document.getElementById('check-balance').addEventListener('click', async functio
     const address = document.getElementById('stx-address').value.trim();
     
     if (!address) {
-        alert('Por favor, ingresa una dirección de billetera STX válida.');
+        alert('Please enter a valid STX wallet address.');
         return;
     }
 
-    // Limpiar resultados previos
-    document.getElementById('balance').innerText = 'Cargando...';
+    // Clear previous results
+    document.getElementById('balance').innerText = 'Loading...';
     document.getElementById('balance-usd').innerText = '';
 
-    // Obtener el balance en STX
+    // Get the balance in STX
     const balance = await getBalance(address);
 
     if (balance !== null) {
-        // Obtener el precio del STX en USD
+        // Get the price of STX in USD
         const priceUSD = await getSTXPriceUSD();
         
-        // Calcular el valor en dólares
+        // Calculate the value in USD
         const balanceUSD = priceUSD ? (balance * priceUSD).toFixed(2) : 'N/A';
         
-        // Mostrar resultados en la página
+        // Display results on the page
         document.getElementById('balance').innerText = `${balance} STX`;
         document.getElementById('balance-usd').innerText = `≈ ${balanceUSD} USD`;
     } else {
-        document.getElementById('balance').innerText = 'No se pudo obtener el balance.';
+        document.getElementById('balance').innerText = 'Unable to retrieve the balance.';
     }
 });
 
-// Obtener el balance de la dirección STX
+// Get the balance of the STX address
 async function getBalance(address) {
     const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}`;
     try {
         const response = await fetch(url);
         const data = await response.json();
-        return data.balance / 1000000; // Convertir satoshis a STX
+        return data.balance / 1000000; // Convert satoshis to STX
     } catch (error) {
-        console.error('Error al obtener el balance:', error);
+        console.error('Error getting balance:', error);
         return null;
     }
 }
 
-// Obtener el precio de STX en USD
+// Get the price of STX in USD
 async function getSTXPriceUSD() {
     const url = 'https://api.coingecko.com/api/v3/simple/price?ids=blockstack&vs_currencies=usd';
     try {
@@ -49,7 +49,7 @@ async function getSTXPriceUSD() {
         const data = await response.json();
         return data.blockstack.usd;
     } catch (error) {
-        console.error('Error al obtener el precio de STX:', error);
+        console.error('Error getting STX price:', error);
         return null;
     }
 }
