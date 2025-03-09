@@ -11,8 +11,8 @@ body {
     background-color: #f7f8fa; /* Fondo claro, neutro */
     color: #333;
     display: flex;
-    flex-direction: column;  /* Coloca los elementos en columna */
-    justify-content: space-between;  /* Asegura que el footer esté al fondo */
+    justify-content: center; /* Centra el contenedor horizontalmente */
+    align-items: center; /* Centra el contenedor verticalmente */
     min-height: 100vh;
 }
 
@@ -25,7 +25,6 @@ body {
     width: 100%;
     max-width: 600px;
     text-align: center;
-    flex-grow: 1;  /* Asegura que ocupe el espacio disponible */
 }
 
 /* Header */
