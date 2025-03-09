@@ -22,7 +22,7 @@ body {
 :root {
     --violeta-principal: #6a49e4; /* Violeta para título, botones y resultados */
     --violeta-oscuro: #4a2c72; /* Violeta oscuro para hover */
-    --gris-suave: #6c6c6c; /* Gris suave para "Saldo STX" */
+    --gris-suave: #6c6c6c; /* Gris suave para "STX Balance" */
     --gris-claro: #e1e4e8; /* Gris claro para el botón después de la consulta */
 }
 
@@ -104,7 +104,7 @@ header p {
 
 #balance-container h2 {
     font-size: 1.5rem;
-    color: var(--gris-suave); /* Usamos gris suave para "Saldo STX" */
+    color: var(--gris-suave); /* Usamos gris suave para "STX Balance" */
     font-weight: 600;
 }
 
