@@ -98,9 +98,9 @@ function filterRecentTransactions(transactions) {
     });
 }
 
-// Resolver la dirección BNS a dirección STX (usando la API de Hiro)
+// Resolver la dirección BNS a dirección STX (usando un resolver BNS externo)
 async function resolveBnsAddress(bnsAddress) {
-    const url = `https://api.hiro.so/v1/names/${bnsAddress}`;
+    const url = `https://name-registrar.bns.xyz/v1/lookup/${bnsAddress}`;
     try {
         const response = await fetch(url);
         const data = await response.json();
