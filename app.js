@@ -13,7 +13,7 @@ document.getElementById('check-balance').addEventListener('click', async functio
     // Consultar el balance
     const balance = await getBalance(address);
     if (balance !== null) {
-        document.getElementById('balance').innerText = ${balance} STX;
+        document.getElementById('balance').innerText = `${balance} STX`;
     } else {
         document.getElementById('balance').innerText = 'No se pudo obtener el balance.';
     }
@@ -26,7 +26,7 @@ document.getElementById('check-balance').addEventListener('click', async functio
         const transactionsList = document.getElementById('transactions-list');
         recentTransactions.forEach(tx => {
             const listItem = document.createElement('li');
-            listItem.textContent = Tx ID: ${tx.tx_id}, Block: ${tx.block_height}, Fecha: ${new Date(tx.block_time * 1000).toLocaleString()};
+            listItem.textContent = `Tx ID: ${tx.tx_id}, Block: ${tx.block_height}, Fecha: ${new Date(tx.block_time * 1000).toLocaleString()}`;
             transactionsList.appendChild(listItem);
         });
     } else {
@@ -37,7 +37,7 @@ document.getElementById('check-balance').addEventListener('click', async functio
 
 // Obtener el balance de la dirección
 async function getBalance(address) {
-    const url = https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address};
+    const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}`;
     try {
         const response = await fetch(url);
         const data = await response.json();
@@ -50,7 +50,7 @@ async function getBalance(address) {
 
 // Obtener las transacciones de la dirección
 async function getTransactions(address) {
-    const url = https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}/transactions;
+    const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}/transactions`;
     try {
         const response = await fetch(url);
         const data = await response.json();
