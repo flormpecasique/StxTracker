@@ -103,7 +103,7 @@ header p {
 }
 
 #balance-container h2 {
-    font-size: 1.5rem;
+    font-size: 1.2rem; /* Reducido el tamaño de la fuente */
     color: var(--gris-suave); /* Usamos gris suave para "STX Balance" */
     font-weight: 600;
 }
