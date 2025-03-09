@@ -1,4 +1,4 @@
-const apiKey = '98674ed974b087184671ad5e8862345a';  // Tu API Key de Hiro
+const apiKey = '98674ed974b087184671ad5e8862345a';  // API Key de Hiro para StxScan
 
 document.getElementById('check-balance').addEventListener('click', async function() {
     const address = document.getElementById('stx-address').value.trim();
