@@ -10,19 +10,21 @@ document.getElementById('check-balance').addEventListener('click', async functio
     document.getElementById('balance').innerText = '';
     document.getElementById('transactions-list').innerHTML = '';
 
-    // Verificar si la dirección es BNS (termina en .btc)
     let actualAddress = address;
     if (address.endsWith('.btc')) {
         // Resolver la dirección BNS
+        console.log(`Resolviendo BNS: ${address}`);
         const resolvedAddress = await resolveBnsAddress(address);
         if (!resolvedAddress) {
             alert('No se pudo resolver la dirección BNS.');
             return;
         }
+        console.log(`Dirección resuelta de BNS: ${resolvedAddress}`);
         actualAddress = resolvedAddress;
     }
 
     // Consultar el balance
+    console.log(`Consultando saldo para la dirección STX: ${actualAddress}`);
     const balance = await getBalance(actualAddress);
     if (balance !== null) {
         document.getElementById('balance').innerText = `${balance} STX`;
@@ -31,6 +33,7 @@ document.getElementById('check-balance').addEventListener('click', async functio
     }
 
     // Consultar las transacciones recientes
+    console.log(`Consultando transacciones para la dirección STX: ${actualAddress}`);
     const transactions = await getTransactions(actualAddress);
     const recentTransactions = filterRecentTransactions(transactions);
 
@@ -53,6 +56,7 @@ async function getBalance(address) {
     try {
         const response = await fetch(url);
         const data = await response.json();
+        console.log('Datos del balance:', data);
         if (data.balance !== undefined) {
             return data.balance / 1000000; // Convertir satoshis a STX
         } else {
@@ -71,6 +75,7 @@ async function getTransactions(address) {
     try {
         const response = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } });
         const data = await response.json();
+        console.log('Datos de transacciones:', data);
         return data.results || []; // Devolver transacciones o un array vacío
     } catch (error) {
         console.error('Error al obtener las transacciones:', error);
@@ -99,6 +104,7 @@ async function resolveBnsAddress(bnsAddress) {
     try {
         const response = await fetch(url);
         const data = await response.json();
+        console.log('Datos de resolución de BNS:', data);
         if (data.address) {
             return data.address; // Devolver la dirección STX correspondiente
         } else {
