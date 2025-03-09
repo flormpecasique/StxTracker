@@ -100,3 +100,11 @@ header p {
     font-weight: 500;
 }
 
+footer {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #c0c0c0; /* Gris muy claro */
+    margin-top: 20px;
+    padding: 10px 0;
+}
+
