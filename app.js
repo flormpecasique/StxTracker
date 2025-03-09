@@ -2,7 +2,7 @@ document.getElementById('check-balance').addEventListener('click', async functio
     const address = document.getElementById('stx-address').value.trim();
 
     if (!address) {
-        alert('Por favor, ingresa una dirección de billetera STX válida.');
+        alert('Por favor, ingresa una dirección de billetera STX o BNS válida.');
         return;
     }
 
@@ -13,12 +13,13 @@ document.getElementById('check-balance').addEventListener('click', async functio
     // Verificar si la dirección es BNS (termina en .btc)
     let actualAddress = address;
     if (address.endsWith('.btc')) {
-        const bnsAddress = await getBnsAddress(address);
-        if (!bnsAddress) {
+        // Resolver la dirección BNS
+        const resolvedAddress = await resolveBnsAddress(address);
+        if (!resolvedAddress) {
             alert('No se pudo resolver la dirección BNS.');
             return;
         }
-        actualAddress = bnsAddress;
+        actualAddress = resolvedAddress;
     }
 
     // Consultar el balance
@@ -52,7 +53,12 @@ async function getBalance(address) {
     try {
         const response = await fetch(url);
         const data = await response.json();
-        return data.balance / 1000000; // Convertir satoshis a STX
+        if (data.balance !== undefined) {
+            return data.balance / 1000000; // Convertir satoshis a STX
+        } else {
+            console.error('Error al obtener el balance:', data);
+            return null;
+        }
     } catch (error) {
         console.error('Error al obtener el balance:', error);
         return null;
@@ -63,9 +69,7 @@ async function getBalance(address) {
 async function getTransactions(address) {
     const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}/transactions?limit=100`;
     try {
-        const response = await fetch(url, {
-            headers: { 'Cache-Control': 'no-cache' }
-        });
+        const response = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } });
         const data = await response.json();
         return data.results || []; // Devolver transacciones o un array vacío
     } catch (error) {
@@ -89,8 +93,8 @@ function filterRecentTransactions(transactions) {
     });
 }
 
-// Resolver dirección BNS (.btc) a dirección STX
-async function getBnsAddress(bnsAddress) {
+// Resolver la dirección BNS a dirección STX
+async function resolveBnsAddress(bnsAddress) {
     const url = `https://stacks-node-api.mainnet.stacks.co/v2/names/${bnsAddress}`;
     try {
         const response = await fetch(url);
@@ -98,7 +102,7 @@ async function getBnsAddress(bnsAddress) {
         if (data.address) {
             return data.address; // Devolver la dirección STX correspondiente
         } else {
-            console.error('No se resolvió la dirección BNS correctamente.');
+            console.error('No se resolvió la dirección BNS correctamente:', data);
             return null;
         }
     } catch (error) {
