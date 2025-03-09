@@ -74,17 +74,13 @@ header p {
     transform: translateY(-2px); /* Efecto sutil al hacer hover */
 }
 
-/* Contenedores de resultados */
+/* Contenedor de resultados */
 .results-section {
     margin-top: 30px;
-    text-align: left;
+    text-align: center;
 }
 
-#balance-container, #transactions-container {
-    margin-bottom: 20px;
-}
-
-#balance-container h2, #transactions-container h2 {
+#balance-container h2 {
     font-size: 1.3rem;
     color: #333;
     font-weight: 600;
@@ -95,21 +91,3 @@ header p {
     color: #6a49e4; /* Violeta que corresponde a la marca de Stacks */
     font-weight: bold;
 }
-
-#transactions-list {
-    list-style-type: none;
-    padding: 0;
-}
-
-#transactions-list li {
-    font-size: 1rem;
-    color: #555;
-    border-bottom: 1px solid #ddd;
-    padding: 8px 0;
-}
-
-#transactions-list li:last-child {
-    border-bottom: none;
-}
-    
-    
