@@ -1,39 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"> <!-- Cambiar el idioma a inglés -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consultar balance STX</title>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>STX Balance Tracker</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Stx Balance</h1>
-            <p>¡Consulta el saldo de cualquier dirección Stacks!</p>
+            <h1>STX Balance</h1>
+            <p>Check your STX balance quickly and easily.</p>
         </header>
         
-        <section class="input-section">
-            <input type="text" id="stx-address" placeholder="Ingresa tu dirección de Stacks" />
-            <button id="check-balance">Consultar</button>
-        </section>
+        <div class="input-section">
+            <label for="stx-address">STX Address</label>
+            <input type="text" id="stx-address" placeholder="Enter your STX address">
+            <button id="check-balance">Check Balance</button>
+        </div>
         
-        <section class="results-section">
+        <div class="results-section">
             <div id="balance-container">
-                <h2>Saldo STX</h2>
-                <p id="balance">---</p>
-                <p id="balance-usd" class="balance-usd">---</p>
+                <h2>STX Balance</h2>
+                <div id="balance">0 STX</div>
+                <div class="balance-usd">$0.00</div>
             </div>
-        </section>
-    </div> <!-- Cierre correcto del contenedor -->
-
+        </div>
+    </div>
+    
     <footer>
-        <p>&copy; <span id="year"></span> STX Balance by flor.btc | Todos los derechos reservados.</p>
+        <p>© 2025 STX Balance Tracker by flor.btc. All rights reserved.</p>
     </footer>
-
+    
     <script src="app.js"></script>
-    <script>
-        document.getElementById('year').textContent = new Date().getFullYear();
-    </script>
 </body>
 </html>
