@@ -22,6 +22,8 @@ body {
 :root {
     --violeta-principal: #6a49e4; /* Violeta para título, botones y resultados */
     --violeta-oscuro: #4a2c72; /* Violeta oscuro para hover */
+    --gris-suave: #6c6c6c; /* Gris suave para "Saldo STX" */
+    --gris-claro: #e1e4e8; /* Gris claro para el botón después de la consulta */
 }
 
 /* Contenedor principal */
@@ -80,9 +82,18 @@ header p {
     margin-top: 10px; /* Se agrega margen superior al botón */
 }
 
+/* Botón en estado hover */
 #check-balance:hover {
     background-color: var(--violeta-oscuro); /* Usamos el violeta oscuro para hover */
     transform: translateY(-2px);
+}
+
+/* Estilo del botón después de la consulta */
+#check-balance.after-query {
+    background-color: var(--gris-claro); /* Gris claro después de la consulta */
+    color: #333; /* Texto en gris oscuro para contraste */
+    cursor: not-allowed; /* Indicador de que ya no se puede hacer clic */
+    pointer-events: none; /* Deshabilitamos los clics para evitar interacción */
 }
 
 /* Contenedor de resultados */
@@ -93,13 +104,13 @@ header p {
 
 #balance-container h2 {
     font-size: 1.5rem;
-    color: var(--violeta-principal); /* Usamos el violeta principal para el resultado */
+    color: var(--gris-suave); /* Usamos gris suave para "Saldo STX" */
     font-weight: 600;
 }
 
 #balance {
     font-size: 2rem;
-    color: var(--violeta-principal); /* Usamos el violeta principal para el balance */
+    color: var(--violeta-principal); /* Usamos el violeta principal para el resultado */
     font-weight: 700;
 }
 
