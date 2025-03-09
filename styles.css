@@ -103,14 +103,30 @@ header p {
     font-weight: 500;
 }
 
-/* Footer siempre al final de la página */
+/* Footer */
 footer {
-    text-align: center;
-    font-size: 1rem;
-    color: #a5a5a5; /* Gris suave */
-    padding: 20px 0;
+    text-align: center;               /* Centrado de texto */
+    font-size: 0.85rem;               /* Tamaño de fuente más pequeño */
+    color: #9e9e9e;                   /* Gris suave para el texto */
+    padding: 20px 0;                  /* Espaciado generoso en la parte superior e inferior */
     width: 100%;
-    margin-top: 40px;
-    background-color: #fff; /* Fondo blanco para separar el footer */
-    border-top: 1px solid #ddd; /* Línea sutil en el borde superior */
+    background-color: #fafafa;        /* Fondo suave para el footer */
+    margin-top: 30px;                 /* Espacio superior para dar respiro */
+    border-top: 1px solid #e1e4e8;    /* Línea sutil de separación */
+}
+
+footer p {
+    font-weight: 400;                 /* Peso normal para que no sea tan pesado visualmente */
+    line-height: 1.5;                 /* Mejor separación entre líneas */
+}
+
+footer a {
+    text-decoration: none;            /* Quitar subrayado de los enlaces */
+    color: #6a49e4;                   /* Violeta suave similar al de los botones */
+    font-weight: 600;                 /* Resaltar los enlaces */
+}
+
+footer a:hover {
+    color: #5a40c0;                   /* Violeta más oscuro en hover */
+    text-decoration: underline;       /* Subrayado en hover para interactividad */
 }
