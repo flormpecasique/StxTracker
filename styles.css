@@ -84,7 +84,7 @@ header p {
 
 /* Botón en estado hover */
 #check-balance:hover {
-    background-color: var(--violeta-oscuro); /* Usamos el violeta oscuro para hover */
+    background-color: #5c3d9f; /* Un violeta más suave y cercano al principal */
     transform: translateY(-2px);
 }
 
