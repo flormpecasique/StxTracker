@@ -100,19 +100,11 @@ header p {
     font-weight: 500;
 }
 
-body {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-height: 100vh;
-}
-
 footer {
     text-align: center;
     font-size: 0.8rem;
-    color: #c0c0c0; /* Gris muy claro */
-    padding: 10px 0;
-    position: relative;
-    bottom: 0;
-    width: 100%;
+    color: #ccc; /* Gris claro */
+    margin-top: 20px;
+    padding: 10px;
 }
+
