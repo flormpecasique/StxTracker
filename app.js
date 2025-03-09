@@ -1,4 +1,5 @@
-const apiKey = '98674ed974b087184671ad5e8862345a';  // API Key de Hiro para StxScan
+// Sustituye 'YOUR_API_KEY' por tu API Key de Hiro para StxScan
+const API_KEY = '98674ed974b087184671ad5e8862345a';
 
 document.getElementById('check-balance').addEventListener('click', async function() {
     const address = document.getElementById('stx-address').value.trim();
@@ -58,7 +59,7 @@ async function getBalance(address) {
     try {
         const response = await fetch(url, {
             headers: {
-                'Authorization': `Bearer ${apiKey}`  // Usar tu API Key en la cabecera
+                'Authorization': `Bearer ${API_KEY}` // Agregamos la API Key al encabezado
             }
         });
         const data = await response.json();
@@ -81,8 +82,7 @@ async function getTransactions(address) {
     try {
         const response = await fetch(url, {
             headers: {
-                'Authorization': `Bearer ${apiKey}`,  // Usar tu API Key en la cabecera
-                'Cache-Control': 'no-cache'
+                'Authorization': `Bearer ${API_KEY}` // Agregamos la API Key al encabezado
             }
         });
         const data = await response.json();
