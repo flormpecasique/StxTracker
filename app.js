@@ -35,7 +35,7 @@ document.getElementById('check-balance').addEventListener('click', async functio
 
 // Función para resolver un BNS name a una dirección STX
 async function resolveBNS(bnsName) {
-    const url = `https://api.hiro.so/v1/bns/names/${bnsName}`;
+    const url = `https://stacks-node-api.mainnet.stacks.co/v2/names/${bnsName}/address`;
     try {
         const response = await fetch(url);
         if (!response.ok) throw new Error('BNS not found');
@@ -72,4 +72,3 @@ async function getSTXPriceUSD() {
         return null;
     }
 }
-
