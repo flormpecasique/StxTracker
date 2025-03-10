@@ -1,4 +1,4 @@
-document.getElementById('check-balance').addEventListener('click', async function() {
+document.getElementById('check-balance').addEventListener('click', async function () {
     let input = document.getElementById('stx-address').value.trim();
 
     if (!input) {
@@ -10,7 +10,7 @@ document.getElementById('check-balance').addEventListener('click', async functio
     document.getElementById('balance').innerText = 'Loading...';
     document.getElementById('balance-usd').innerText = '';
 
-    // Si el input es un BNS name (termina en .btc), lo resolvemos
+    // Si el input es un BNS name (termina en .btc), intentamos resolverlo
     if (input.endsWith('.btc')) {
         const resolvedAddress = await resolveBNS(input);
         if (!resolvedAddress) {
@@ -33,18 +33,44 @@ document.getElementById('check-balance').addEventListener('click', async functio
     }
 });
 
-// Función para resolver un BNS name a una dirección STX
+// Función para resolver un BNS name a una dirección STX (Probamos varias APIs)
 async function resolveBNS(bnsName) {
-    const url = `https://stacks-node-api.mainnet.stacks.co/v2/names/${bnsName}/address`;
+    let address = null;
+
+    // 1. Intentamos con Hiro API (oficial de Stacks)
     try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error('BNS not found');
-        const data = await response.json();
-        return data.address || null; // Retorna la dirección STX si existe
+        const response = await fetch(`https://api.hiro.so/v1/bns/names/${bnsName}`);
+        if (response.ok) {
+            const data = await response.json();
+            if (data.address) return data.address;
+        }
     } catch (error) {
-        console.error('Error resolving BNS:', error);
-        return null;
+        console.error('Hiro API error:', error);
     }
+
+    // 2. Intentamos con otra API alternativa
+    try {
+        const response = await fetch(`https://api.bns.xyz/v1/names/${bnsName}`);
+        if (response.ok) {
+            const data = await response.json();
+            if (data.address) return data.address;
+        }
+    } catch (error) {
+        console.error('BNS.xyz API error:', error);
+    }
+
+    // 3. Intentamos con Stacks Node API (funciona solo para BNS v1, pero por si acaso)
+    try {
+        const response = await fetch(`https://stacks-node-api.mainnet.stacks.co/v2/names/${bnsName}/address`);
+        if (response.ok) {
+            const data = await response.json();
+            return data.address || null;
+        }
+    } catch (error) {
+        console.error('Stacks Node API error:', error);
+    }
+
+    return address;
 }
 
 // Obtener el balance de una dirección STX
