@@ -149,19 +149,31 @@ footer {
     margin-top: 40px;
 }
 
-/* Responsividad de la tabla */
+/* Responsividad de la página */
 @media (max-width: 768px) {
-    .table-container {
-        overflow-x: auto; /* Permite que la tabla se desplace horizontalmente */
-        padding: 10px; /* Añadimos un poco de padding para mejorar la visualización */
+    .container {
+        width: 100%;
+        padding: 15px; /* Reducir padding para pantallas más pequeñas */
     }
 
-    table {
-        width: 100%;
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap; /* Evita el ajuste de texto */
-        max-width: 100%; /* Asegura que la tabla no se desborde */
+    h1 {
+        font-size: 28px; /* Reducir tamaño de fuente del título */
+    }
+
+    /* Adaptación de inputs y botones */
+    input, select, button {
+        font-size: 14px; /* Reducir tamaño de los inputs y botones */
+        padding: 10px;
+    }
+
+    .input-section {
+        margin-bottom: 20px;
+    }
+
+    /* Mejorar la visualización de las tablas en pantallas pequeñas */
+    .table-container {
+        overflow-x: auto; /* Permite que la tabla se desplace horizontalmente */
+        padding: 10px;
     }
 
     th, td {
@@ -169,13 +181,8 @@ footer {
         padding: 8px;
     }
 
-    th {
-        text-align: left;
-    }
-
-    /* Para evitar que la tabla quede fuera de la pantalla */
-    .table-container {
-        max-width: 100%;
-        overflow-x: scroll;
+    footer {
+        font-size: 12px;
+        padding: 10px;
     }
 }
