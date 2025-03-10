@@ -1,84 +1,55 @@
-document.getElementById('check-balance').addEventListener('click', async function () {
-    await checkBalance();
-});
-
-// Permitir consulta con la tecla "Enter"
-document.getElementById('stx-address').addEventListener('keydown', async function (event) {
-    if (event.key === 'Enter') {
-        await checkBalance();
-    }
-});
-
-// Función principal para obtener el balance
-async function checkBalance() {
-    let input = document.getElementById('stx-address').value.trim();
-
-    if (!input) {
-        alert('Please enter a valid STX address or BNS name.');
+document.getElementById('check-balance').addEventListener('click', async function() {
+    const address = document.getElementById('stx-address').value.trim();
+    
+    if (!address) {
+        alert('Por favor, ingresa una dirección de billetera STX válida.');
         return;
     }
 
-    // Clear previous results
-    document.getElementById('balance').innerText = 'Loading...';
+    // Limpiar resultados previos
+    document.getElementById('balance').innerText = 'Cargando...';
     document.getElementById('balance-usd').innerText = '';
 
-    // Si el input es un BNS name (termina en .btc), intentamos resolverlo
-    if (input.endsWith('.btc')) {
-        const resolvedAddress = await resolveBNS(input);
-        if (!resolvedAddress) {
-            document.getElementById('balance').innerText = 'BNS name not found.';
-            return;
-        }
-        input = resolvedAddress; // Reemplazamos input con la dirección STX
-    }
-
-    // Obtener balance en STX
-    const balance = await getBalance(input);
+    // Consultar el balance
+    const balance = await getBalance(address);
     if (balance !== null) {
-        const priceUSD = await getSTXPriceUSD();
-        const balanceUSD = priceUSD ? (balance * priceUSD).toFixed(2) : 'N/A';
-
         document.getElementById('balance').innerText = `${balance} STX`;
-        document.getElementById('balance-usd').innerText = `≈ ${balanceUSD} USD`;
-    } else {
-        document.getElementById('balance').innerText = 'Unable to retrieve the balance.';
-    }
-}
-
-// Función para resolver un BNS name a una dirección STX (API Oficial BNS.xyz)
-async function resolveBNS(bnsName) {
-    try {
-        const response = await fetch(`https://api.bns.xyz/v1/names/${bnsName}`);
-        if (response.ok) {
-            const data = await response.json();
-            return data.identity?.address || null;
+        
+        // Obtener precio de STX en USD
+        const stxPrice = await getStxPrice();
+        if (stxPrice !== null) {
+            const balanceInUsd = (balance * stxPrice).toFixed(2);
+            document.getElementById('balance-usd').innerText = `≈ $${balanceInUsd} USD`;
+        } else {
+            document.getElementById('balance-usd').innerText = 'No se pudo obtener el precio en USD.';
         }
-    } catch (error) {
-        console.error('BNS.xyz API error:', error);
+    } else {
+        document.getElementById('balance').innerText = 'No se pudo obtener el balance.';
     }
-    return null;
-}
+});
 
-// Obtener el balance de una dirección STX
+// Obtener el balance de la dirección
 async function getBalance(address) {
+    const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}`;
     try {
-        const response = await fetch(`https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}`);
+        const response = await fetch(url);
         const data = await response.json();
-        return data.balance ? data.balance / 1000000 : null; // Convertir satoshis a STX
+        return data.balance / 1000000; // Convertir de microSTX a STX
     } catch (error) {
-        console.error('Error getting balance:', error);
+        console.error('Error al obtener el balance:', error);
         return null;
     }
 }
 
-// Obtener el precio del STX en USD
-async function getSTXPriceUSD() {
+// Obtener el precio de STX en USD
+async function getStxPrice() {
+    const url = 'https://api.coingecko.com/api/v3/simple/price?ids=blockstack&vs_currencies=usd';
     try {
-        const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=stacks&vs_currencies=usd');
+        const response = await fetch(url);
         const data = await response.json();
-        return data.stacks?.usd || null;
+        return data.blockstack.usd;
     } catch (error) {
-        console.error('Error getting STX price:', error);
+        console.error('Error al obtener el precio de STX:', error);
         return null;
     }
 }
