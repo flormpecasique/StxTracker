@@ -1,24 +1,21 @@
-document.getElementById('check-balance').addEventListener('click', async function() {
+document.getElementById('check-balance').addEventListener('click', checkBalance);
+document.getElementById('stx-address').addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        checkBalance();
+    }
+});
+
+async function checkBalance() { 
     let input = document.getElementById('stx-address').value.trim();
 
     if (!input) {
-        alert('Please enter a valid STX address or BNS name.');
+        alert('Please enter a valid STX address.');
         return;
     }
 
     // Clear previous results
     document.getElementById('balance').innerText = 'Loading...';
     document.getElementById('balance-usd').innerText = '';
-
-    // Si el input es un BNS name (termina en .btc), lo resolvemos
-    if (input.endsWith('.btc')) {
-        const resolvedAddress = await resolveBNS(input);
-        if (!resolvedAddress) {
-            document.getElementById('balance').innerText = 'BNS name not found.';
-            return;
-        }
-        input = resolvedAddress; // Reemplazamos input con la dirección STX
-    }
 
     // Obtener balance en STX
     const balance = await getBalance(input);
@@ -30,18 +27,6 @@ document.getElementById('check-balance').addEventListener('click', async functio
         document.getElementById('balance-usd').innerText = `≈ ${balanceUSD} USD`;
     } else {
         document.getElementById('balance').innerText = 'Unable to retrieve the balance.';
-    }
-});
-
-// Función para resolver un BNS name a una dirección STX usando @stacks/bns
-async function resolveBNS(bnsName) {
-    try {
-        const { getAddressFromName } = window.StacksBns; // Asegúrate de que esta función esté disponible
-        const address = await getAddressFromName(bnsName); // Resuelve el nombre BNS
-        return address || null; // Retorna la dirección STX si existe
-    } catch (error) {
-        console.error('Error resolving BNS:', error);
-        return null;
     }
 }
 
