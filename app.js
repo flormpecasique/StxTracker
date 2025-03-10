@@ -1,6 +1,13 @@
-document.getElementById('check-balance').addEventListener('click', async function() {
+document.getElementById('check-balance').addEventListener('click', fetchBalance);
+document.getElementById('stx-address').addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        fetchBalance();
+    }
+});
+
+async function fetchBalance() {
     const address = document.getElementById('stx-address').value.trim();
-    
+
     if (!address) {
         alert('Por favor, ingresa una dirección de billetera STX válida.');
         return;
@@ -14,7 +21,7 @@ document.getElementById('check-balance').addEventListener('click', async functio
     const balance = await getBalance(address);
     if (balance !== null) {
         document.getElementById('balance').innerText = `${balance} STX`;
-        
+
         // Obtener precio de STX en USD
         const stxPrice = await getStxPrice();
         if (stxPrice !== null) {
@@ -26,7 +33,7 @@ document.getElementById('check-balance').addEventListener('click', async functio
     } else {
         document.getElementById('balance').innerText = 'No se pudo obtener el balance.';
     }
-});
+}
 
 // Obtener el balance de la dirección
 async function getBalance(address) {
