@@ -1,6 +1,4 @@
-import { BnsClient } from '@stacks/bns';
-
-document.getElementById('check-balance').addEventListener('click', async function() {
+document.getElementById('check-balance').addEventListener('click', async function () {
     let input = document.getElementById('stx-address').value.trim();
 
     if (!input) {
@@ -9,10 +7,10 @@ document.getElementById('check-balance').addEventListener('click', async functio
     }
 
     // Clear previous results
-    document.getElementById('balance').innerText = 'Loading balance...';
+    document.getElementById('balance').innerText = 'Loading...';
     document.getElementById('balance-usd').innerText = '';
 
-    // Si el input es un BNS name (termina en .btc), lo resolvemos
+    // Si el input es un BNS name (termina en .btc), intentamos resolverlo
     if (input.endsWith('.btc')) {
         const resolvedAddress = await resolveBNS(input);
         if (!resolvedAddress) {
@@ -25,31 +23,32 @@ document.getElementById('check-balance').addEventListener('click', async functio
     // Obtener balance en STX
     const balance = await getBalance(input);
     if (balance !== null) {
-        if (balance === 0) {
-            document.getElementById('balance').innerText = `0 STX`;
-            document.getElementById('balance-usd').innerText = '≈ $0.00 USD';
-        } else {
-            const priceUSD = await getSTXPriceUSD();
-            const balanceUSD = priceUSD ? (balance * priceUSD).toFixed(2) : 'N/A';
+        const priceUSD = await getSTXPriceUSD();
+        const balanceUSD = priceUSD ? (balance * priceUSD).toFixed(2) : 'N/A';
 
-            document.getElementById('balance').innerText = `${balance} STX`;
-            document.getElementById('balance-usd').innerText = `≈ ${balanceUSD} USD`;
-        }
+        document.getElementById('balance').innerText = `${balance} STX`;
+        document.getElementById('balance-usd').innerText = `≈ ${balanceUSD} USD`;
     } else {
         document.getElementById('balance').innerText = 'Unable to retrieve the balance.';
     }
 });
 
-// Función para resolver un BNS name a una dirección STX usando stacks.js
+// Función para resolver un BNS name a una dirección STX (API Oficial BNS.xyz)
 async function resolveBNS(bnsName) {
-    const client = new BnsClient('https://stacks-node-api.mainnet.stacks.co');
+    let address = null;
+
+    // Intentamos con la API oficial de BNS.xyz
     try {
-        const resolvedAddress = await client.lookupAddress(bnsName);
-        return resolvedAddress || null; // Retorna la dirección STX si existe
+        const response = await fetch(`https://api.bns.xyz/v1/names/${bnsName}`);
+        if (response.ok) {
+            const data = await response.json();
+            if (data.identity?.address) return data.identity.address;
+        }
     } catch (error) {
-        console.error('Error resolving BNS:', error);
-        return null;
+        console.error('BNS.xyz API error:', error);
     }
+
+    return address;
 }
 
 // Obtener el balance de una dirección STX
