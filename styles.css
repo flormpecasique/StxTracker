@@ -148,3 +148,27 @@ footer a:hover {
     color: var(--violeta-oscuro);     /* Violeta más oscuro en hover */
     text-decoration: underline;       /* Subrayado en hover */
 }
+
+/* Responsividad de la tabla */
+@media (max-width: 768px) {
+    .table-container {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    th, td {
+        font-size: 12px; /* Reducir el tamaño de fuente en pantallas pequeñas */
+        padding: 8px;
+    }
+
+    th {
+        text-align: left;
+    }
+}
+
