@@ -35,12 +35,12 @@ document.getElementById('check-balance').addEventListener('click', async functio
 
 // Función para resolver un BNS name a una dirección STX
 async function resolveBNS(bnsName) {
-    const url = `https://api.bns.xyz/v1/name/${bnsName}`;
+    const url = `https://api.hiro.so/v1/bns/names/${bnsName}`;
     try {
         const response = await fetch(url);
         if (!response.ok) throw new Error('BNS not found');
         const data = await response.json();
-        return data.address; // Retorna la dirección STX asociada al BNS
+        return data.address || null; // Retorna la dirección STX si existe
     } catch (error) {
         console.error('Error resolving BNS:', error);
         return null;
@@ -72,3 +72,4 @@ async function getSTXPriceUSD() {
         return null;
     }
 }
+
