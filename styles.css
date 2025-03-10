@@ -1,165 +1,168 @@
-/* Reset de márgenes y padding */
-* {
+/* General styles */
+body {
+    font-family: 'Inter', sans-serif; /* Usamos Inter, como en Stacks.co */
+    background-color: #f9f9f9;
+    color: #333;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
 }
 
-/* Fondo y diseño general */
-body {
-    font-family: 'Roboto', sans-serif; /* Similar a Hiro, moderna y limpia */
-    background-color: #f1f3f6; /* Color de fondo más claro y suave */
-    color: #333;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 40px 0; /* Espaciado superior e inferior para no pegar el contenido */
-}
-
-/* Definimos el violeta principal para usarse en toda la página */
-:root {
-    --violeta-principal: #6a49e4; /* Violeta para título, botones y resultados */
-    --violeta-oscuro: #4a2c72; /* Violeta oscuro para hover */
-    --gris-suave: #6c6c6c; /* Gris suave para "STX Balance" */
-    --gris-claro: #e1e4e8; /* Gris claro para el botón después de la consulta */
-}
-
-/* Contenedor principal */
+/* Container */
 .container {
-    background-color: white;
-    border-radius: 16px; /* Bordes más redondeados para un toque moderno */
-    padding: 40px; /* Más espacio interno */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Sombra más suave */
-    width: 100%;
-    max-width: 600px;
-    text-align: center;
-    margin-top: 40px; /* Espaciado superior para evitar que el contenedor esté pegado al borde */
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #ffffff;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
 }
 
-/* Header */
-header h1 {
-    font-size: 2.5rem; /* Aumentamos el tamaño del título */
-    color: var(--violeta-principal); /* Usamos el violeta principal */
+/* Title */
+h1 {
+    text-align: center;
+    font-weight: 700; /* Peso más fuerte para el título */
+    color: #6a49e4;
+    font-size: 32px; /* Tamaño de título similar al de Stacks */
     margin-bottom: 20px;
     margin-top: 30px;
-    font-weight: 700; /* Peso más fuerte para un buen contraste */
 }
 
-header p {
-    font-size: 1.2rem;
-    color: #6c6c6c; /* Gris suave */
-    margin-bottom: 30px; /* Espaciado adicional para separar el título */
+/* Form */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
-/* Estilo del input */
-.input-section {
-    margin: 20px 0;
+label {
+    font-weight: 400; /* Normal, sin negrita */
+    font-size: 14px;
 }
 
-#stx-address {
-    padding: 12px;
-    width: 80%;
-    border: 2px solid #e1e4e8; /* Gris claro para el borde */
-    border-radius: 8px;
-    font-size: 1rem;
-    margin-bottom: 20px; /* Espacio entre el input y el botón */
-    background-color: #fafafa; /* Fondo suave en el input */
-}
-
-/* Estilo del botón */
-#check-balance {
-    padding: 12px 20px;
-    font-size: 1rem;
-    border: none;
-    border-radius: 8px;
-    background-color: var(--violeta-principal); /* Usamos el violeta principal para el botón */
-    color: white;
+input, select {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    outline: none;
+    transition: 0.2s;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s ease-in-out;
+}
+
+input:focus, select:focus {
+    border-color: #5F3DC4;
+    box-shadow: 0 0 5px rgba(95, 61, 196, 0.4);
+}
+
+/* Buttons */
+button {
+    padding: 12px;
+    font-size: 16px;
     font-weight: 600;
-    margin-top: 10px; /* Se agrega margen superior al botón */
+    cursor: pointer;
+    border-radius: 6px;
+    border: none;
+    transition: 0.3s ease-in-out;
 }
 
-/* Botón en estado hover */
-#check-balance:hover {
-    background-color: rgba(224, 228, 232, 0.6); /* Gris muy claro con transparencia */
-    transform: translateY(-2px);
+.primary-btn {
+    background-color: #5F3DC4;
+    color: #fff;
 }
 
-/* Estilo del botón después de la consulta */
-#check-balance.after-query {
-    background-color: var(--gris-claro); /* Gris claro después de la consulta */
-    color: #333; /* Texto en gris oscuro para contraste */
-    cursor: not-allowed; /* Indicador de que ya no se puede hacer clic */
-    pointer-events: none; /* Deshabilitamos los clics para evitar interacción */
+.primary-btn:hover {
+    background-color: #4A2F9A;
 }
 
-/* Contenedor de resultados */
-.results-section {
-    margin-top: 40px;
+/* Botón Reset */
+.secondary-btn {
+    background-color: #f4f4f4;
+    color: #5F3DC4;
+    border: 1px solid #ddd;
+}
+
+.secondary-btn:hover {
+    background-color: #e0e0e0;
+    color: #4A2F9A;
+}
+
+.secondary-btn:focus {
+    box-shadow: 0 0 5px rgba(95, 61, 196, 0.4);
+}
+
+/* Table */
+.table-container {
+    overflow-x: auto; /* Permite desplazamiento horizontal */
+    width: 100%;
+}
+
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    table-layout: fixed; /* Ajuste de las columnas de manera automática */
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+    font-weight: 400; /* Peso normal para los textos de la tabla */
+}
+
+th {
+    background-color: #F3F3F3;
+}
+
+tr:hover {
+    background-color: #F8F8F8;
+}
+
+/* Add alternate row colors for readability */
+tr:nth-child(odd) {
+    background-color: #F9F9F9;
+}
+
+tr:nth-child(even) {
+    background-color: #FFFFFF;
+}
+
+/* Messages */
+.message {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: 600;
     text-align: center;
 }
 
-#balance-container h2 {
-    font-size: 1.2rem; /* Reducido el tamaño de la fuente */
-    color: var(--gris-suave); /* Usamos gris suave para "STX Balance" */
-    font-weight: 600;
-}
-
-#balance {
-    font-size: 2rem;
-    color: var(--violeta-principal); /* Usamos el violeta principal para el resultado */
-    font-weight: 700;
-}
-
-/* Estilo para el valor en USD */
-.balance-usd {
-    font-size: 1.3rem;
-    color: #4a4a4a;
-    margin-top: 8px;
-    font-weight: 500;
+.message.error {
+    background-color: #ffdddd;
+    color: #d32f2f;
 }
 
 /* Footer */
 footer {
-    text-align: center;               /* Centrado de texto */
-    font-size: 0.85rem;               /* Tamaño de fuente más pequeño */
-    color: #9e9e9e;                   /* Gris suave para el texto */
-    padding: 30px 0;                  /* Espaciado generoso */
-    width: 100%;
-    background-color: #f7f8fa;        /* Fondo gris claro, igual al de la página */
-    margin-top: 20px;                 /* Espacio superior para dar respiro */
-}
-
-footer p {
-    font-weight: 400;                 /* Peso normal para que no sea tan pesado visualmente */
-    line-height: 1.5;                 /* Mejor separación entre líneas */
-}
-
-footer a {
-    text-decoration: none;            /* Quitar subrayado de los enlaces */
-    color: var(--violeta-principal);  /* Violeta principal para los enlaces */
-    font-weight: 600;                 /* Resaltar los enlaces */
-}
-
-footer a:hover {
-    color: var(--violeta-oscuro);     /* Violeta más oscuro en hover */
-    text-decoration: underline;       /* Subrayado en hover */
+    text-align: center;
+    padding: 20px;
+    font-size: 14px;
+    color: #999; /* Gris más claro para que no sea tan pesado visualmente */
+    margin-top: 40px;
 }
 
 /* Responsividad de la tabla */
 @media (max-width: 768px) {
     .table-container {
-        overflow-x: auto;
+        overflow-x: auto; /* Permite que la tabla se desplace horizontalmente */
+        padding: 10px; /* Añadimos un poco de padding para mejorar la visualización */
     }
 
     table {
         width: 100%;
         display: block;
         overflow-x: auto;
-        white-space: nowrap;
+        white-space: nowrap; /* Evita el ajuste de texto */
+        max-width: 100%; /* Asegura que la tabla no se desborde */
     }
 
     th, td {
@@ -170,5 +173,10 @@ footer a:hover {
     th {
         text-align: left;
     }
-}
 
+    /* Para evitar que la tabla quede fuera de la pantalla */
+    .table-container {
+        max-width: 100%;
+        overflow-x: scroll;
+    }
+}
