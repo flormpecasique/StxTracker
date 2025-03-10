@@ -9,7 +9,7 @@ document.getElementById('check-balance').addEventListener('click', async functio
     }
 
     // Clear previous results
-    document.getElementById('balance').innerText = 'Loading...';
+    document.getElementById('balance').innerText = 'Loading balance...';
     document.getElementById('balance-usd').innerText = '';
 
     // Si el input es un BNS name (termina en .btc), lo resolvemos
@@ -25,11 +25,16 @@ document.getElementById('check-balance').addEventListener('click', async functio
     // Obtener balance en STX
     const balance = await getBalance(input);
     if (balance !== null) {
-        const priceUSD = await getSTXPriceUSD();
-        const balanceUSD = priceUSD ? (balance * priceUSD).toFixed(2) : 'N/A';
+        if (balance === 0) {
+            document.getElementById('balance').innerText = `0 STX`;
+            document.getElementById('balance-usd').innerText = '≈ $0.00 USD';
+        } else {
+            const priceUSD = await getSTXPriceUSD();
+            const balanceUSD = priceUSD ? (balance * priceUSD).toFixed(2) : 'N/A';
 
-        document.getElementById('balance').innerText = `${balance} STX`;
-        document.getElementById('balance-usd').innerText = `≈ ${balanceUSD} USD`;
+            document.getElementById('balance').innerText = `${balance} STX`;
+            document.getElementById('balance-usd').innerText = `≈ ${balanceUSD} USD`;
+        }
     } else {
         document.getElementById('balance').innerText = 'Unable to retrieve the balance.';
     }
