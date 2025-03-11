@@ -149,7 +149,7 @@ footer a:hover {
 
 /* Estilo para la descripción */
 p, .descripcion {
-    font-size: 1em;  /* Un tamaño más pequeño que antes, pero aún legible */
+    font-size: 0.8em;  /* Un tamaño más pequeño que antes, pero aún legible */
     line-height: 1.6; /* Manteniendo buen espaciado entre líneas */
     color: #666;  /* Suavizamos el color para mantener la jerarquía visual */
 }
