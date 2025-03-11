@@ -1,21 +1,27 @@
-document.getElementById('check-balance').addEventListener('click', fetchBalance);
-document.getElementById('stx-address').addEventListener('keydown', function(event) {
-    if (event.key === 'Enter') {
-        fetchBalance();
-    }
-});
-
 async function fetchBalance() {
-    const address = document.getElementById('stx-address').value.trim();
+    let input = document.getElementById('stx-address').value.trim();
 
-    if (!address) {
-        alert('Please enter a valid STX wallet address.');
+    if (!input) {
+        alert('Please enter a valid STX wallet address or BNS name.');
         return;
     }
 
     // Clear previous results
     document.getElementById('balance').innerText = 'Loading...';
     document.getElementById('balance-usd').innerText = '';
+
+    let address = input;
+
+    // Si el input parece un nombre BNS, obtenemos la dirección STX asociada
+    if (!input.startsWith("SP") && !input.startsWith("ST")) {
+        const bnsData = await getBnsAddress(input);
+        if (bnsData && bnsData.address) {
+            address = bnsData.address;
+        } else {
+            document.getElementById('balance').innerText = 'Invalid BNS name.';
+            return;
+        }
+    }
 
     // Fetch balance
     const balance = await getBalance(address);
@@ -35,28 +41,15 @@ async function fetchBalance() {
     }
 }
 
-// Fetch wallet balance
-async function getBalance(address) {
-    const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}`;
+// Fetch BNS address
+async function getBnsAddress(name) {
+    const url = `/api/hiro-proxy?name=${name}`;
     try {
         const response = await fetch(url);
         const data = await response.json();
-        return data.balance / 1000000; // Convert from microSTX to STX
+        return data;
     } catch (error) {
-        console.error('Error fetching balance:', error);
-        return null;
-    }
-}
-
-// Fetch STX price in USD
-async function getStxPrice() {
-    const url = 'https://api.coingecko.com/api/v3/simple/price?ids=blockstack&vs_currencies=usd';
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-        return data.blockstack.usd;
-    } catch (error) {
-        console.error('Error fetching STX price:', error);
+        console.error('Error fetching BNS address:', error);
         return null;
     }
 }
