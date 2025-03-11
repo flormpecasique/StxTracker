@@ -6,12 +6,15 @@ document.getElementById('stx-address').addEventListener('keydown', function(even
 });
 
 async function fetchBalance() {
-    const address = document.getElementById('stx-address').value.trim();
+    let address = document.getElementById('stx-address').value.trim();
 
     if (!address) {
         alert('Please enter a valid STX wallet address or BNS name.');
         return;
     }
+
+    // Convert the address to lowercase
+    address = address.toLowerCase();  // Convierte la dirección a minúsculas
 
     // Clear previous results
     document.getElementById('balance').innerText = 'Loading...';
