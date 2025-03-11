@@ -21,7 +21,18 @@ export default async function handler(req, res) {
         }
 
         const data = await response.json();
-        res.status(200).json(data);
+
+        // Aquí puedes filtrar solo la información que te interesa
+        const result = {
+            address: data.address,
+            blockchain: data.blockchain,
+            status: data.status,
+            last_txid: data.last_txid,
+            zonefile_hash: data.zonefile_hash,
+            zonefile: data.zonefile
+        };
+
+        res.status(200).json(result);
     } catch (error) {
         console.error("Error fetching data from Hiro API:", error);
         res.status(500).json({ error: "Internal Server Error" });
