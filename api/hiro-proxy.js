@@ -21,6 +21,7 @@ export default async function handler(req, res) {
         }
 
         const data = await response.json();
+        // Aquí retornamos la respuesta de Hiro directamente
         res.status(200).json(data);
     } catch (error) {
         console.error("Error fetching data from Hiro API:", error);
