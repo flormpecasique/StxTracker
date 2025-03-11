@@ -1,188 +1,212 @@
-/* General styles */
-body {
-    font-family: 'Inter', sans-serif; /* Usamos Inter, como en Stacks.co */
-    background-color: #f9f9f9;
-    color: #333;
+/* Reset de márgenes y padding */
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
-/* Container */
-.container {
-    max-width: 800px;
-    margin: 50px auto;
-    padding: 20px;
-    background: #ffffff;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
-    border-radius: 8px;
-}
-
-/* Title */
-h1 {
-    text-align: center;
-    font-weight: 700; /* Peso más fuerte para el título */
-    color: #6a49e4;
-    font-size: 32px; /* Tamaño de título similar al de Stacks */
-    margin-bottom: 20px;
-    margin-top: 30px;
-}
-
-/* Form */
-form {
+/* Fondo y diseño general */
+body {
+    font-family: 'Roboto', sans-serif; 
+    background-color: #f1f3f6;
+    color: #333;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 40px 0;
 }
 
-label {
-    font-weight: 400; /* Normal, sin negrita */
-    font-size: 14px;
+/* Definimos el violeta principal para usarse en toda la página */
+:root {
+    --violeta-principal: #6a49e4;
+    --violeta-oscuro: #4a2c72;
+    --gris-suave: #6c6c6c;
+    --gris-claro: #e1e4e8;
 }
 
-input, select {
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    outline: none;
-    transition: 0.2s;
-    cursor: pointer;
+/* Contenedor principal */
+.container {
+    background-color: white;
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+    margin-top: 40px;
 }
 
-input:focus, select:focus {
-    border-color: #5F3DC4;
-    box-shadow: 0 0 5px rgba(95, 61, 196, 0.4);
+/* Header */
+header h1 {
+    font-size: 2.5rem;
+    color: var(--violeta-principal);
+    margin-bottom: 20px;
+    margin-top: 30px;
+    font-weight: 700;
 }
 
-/* Buttons */
-button {
+header p {
+    font-size: 1.2rem;
+    color: #6c6c6c;
+    margin-bottom: 30px;
+}
+
+/* Estilo del input */
+.input-section {
+    margin: 20px 0;
+}
+
+#stx-address {
     padding: 12px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    border-radius: 6px;
+    width: 80%;
+    border: 2px solid #e1e4e8;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-bottom: 20px;
+    background-color: #fafafa;
+}
+
+/* Estilo del botón */
+#check-balance {
+    padding: 12px 20px;
+    font-size: 1rem;
     border: none;
-    transition: 0.3s ease-in-out;
-}
-
-.primary-btn {
-    background-color: #5F3DC4;
-    color: #fff;
-}
-
-.primary-btn:hover {
-    background-color: #4A2F9A;
-}
-
-/* Botón Reset */
-.secondary-btn {
-    background-color: #f4f4f4;
-    color: #5F3DC4;
-    border: 1px solid #ddd;
-}
-
-.secondary-btn:hover {
-    background-color: #e0e0e0;
-    color: #4A2F9A;
-}
-
-.secondary-btn:focus {
-    box-shadow: 0 0 5px rgba(95, 61, 196, 0.4);
-}
-
-/* Table */
-.table-container {
-    overflow-x: auto; /* Permite desplazamiento horizontal */
-    width: 100%;
-}
-
-table {
-    width: 100%;
-    margin-top: 20px;
-    border-collapse: collapse;
-    table-layout: fixed; /* Ajuste de las columnas de manera automática */
-}
-
-th, td {
-    padding: 12px;
-    border-bottom: 1px solid #ddd;
-    text-align: left;
-    font-weight: 400; /* Peso normal para los textos de la tabla */
-}
-
-th {
-    background-color: #F3F3F3;
-}
-
-tr:hover {
-    background-color: #F8F8F8;
-}
-
-/* Add alternate row colors for readability */
-tr:nth-child(odd) {
-    background-color: #F9F9F9;
-}
-
-tr:nth-child(even) {
-    background-color: #FFFFFF;
-}
-
-/* Messages */
-.message {
-    margin-top: 10px;
-    padding: 10px;
-    border-radius: 5px;
+    border-radius: 8px;
+    background-color: var(--violeta-principal);
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s ease-in-out;
     font-weight: 600;
+    margin-top: 10px;
+}
+
+/* Botón en estado hover */
+#check-balance:hover {
+    background-color: rgba(224, 228, 232, 0.6);
+    transform: translateY(-2px);
+}
+
+/* Estilo del botón después de la consulta */
+#check-balance.after-query {
+    background-color: var(--gris-claro);
+    color: #333;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Contenedor de resultados */
+.results-section {
+    margin-top: 40px;
     text-align: center;
 }
 
-.message.error {
-    background-color: #ffdddd;
-    color: #d32f2f;
+#balance-container h2 {
+    font-size: 1.2rem;
+    color: var(--gris-suave);
+    font-weight: 600;
+}
+
+#balance {
+    font-size: 2rem;
+    color: var(--violeta-principal);
+    font-weight: 700;
+}
+
+.balance-usd {
+    font-size: 1.3rem;
+    color: #4a4a4a;
+    margin-top: 8px;
+    font-weight: 500;
 }
 
 /* Footer */
 footer {
     text-align: center;
-    padding: 20px;
-    font-size: 14px;
-    margin-top: 40px;
+    font-size: 0.85rem;
+    color: #9e9e9e;
+    padding: 30px 0;
+    width: 100%;
+    background-color: #f7f8fa;
+    margin-top: 20px;
 }
 
-/* Responsividad de la página */
+footer p {
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+footer a {
+    text-decoration: none;
+    color: var(--violeta-principal);
+    font-weight: 600;
+}
+
+footer a:hover {
+    color: var(--violeta-oscuro);
+    text-decoration: underline;
+}
+
+/* Media Queries para responsividad */
 @media (max-width: 768px) {
+    body {
+        padding: 20px 0;
+    }
+
     .container {
+        padding: 20px;
+    }
+
+    header h1 {
+        font-size: 2rem;  /* Reducimos el tamaño del título */
+    }
+
+    header p {
+        font-size: 1rem;  /* Reducimos el tamaño del texto */
+    }
+
+    #stx-address {
         width: 100%;
-        padding: 15px; /* Reducir padding para pantallas más pequeñas */
+        font-size: 0.9rem;  /* Ajustamos el tamaño de fuente */
     }
 
-    h1 {
-        font-size: 28px; /* Reducir tamaño de fuente del título */
+    #check-balance {
+        width: 100%;
+        font-size: 1rem;
     }
 
-    /* Adaptación de inputs y botones */
-    input, select, button {
-        font-size: 14px; /* Reducir tamaño de los inputs y botones */
+    .results-section {
+        margin-top: 20px;
+    }
+
+    #balance {
+        font-size: 1.8rem;  /* Reducimos el tamaño del balance */
+    }
+
+    .balance-usd {
+        font-size: 1.1rem;  /* Ajustamos el tamaño en USD */
+    }
+}
+
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.5rem;  /* Título más pequeño en móviles */
+    }
+
+    header p {
+        font-size: 0.9rem;  /* Texto aún más pequeño */
+    }
+
+    #stx-address {
+        font-size: 0.9rem;
+    }
+
+    #check-balance {
         padding: 10px;
     }
 
-    .input-section {
-        margin-bottom: 20px;
-    }
-
-    /* Mejorar la visualización de las tablas en pantallas pequeñas */
-    .table-container {
-        overflow-x: auto; /* Permite que la tabla se desplace horizontalmente */
-        padding: 10px;
-    }
-
-    th, td {
-        font-size: 12px; /* Reducir el tamaño de fuente en pantallas pequeñas */
-        padding: 8px;
-    }
-
-    footer {
-        font-size: 12px;
-        padding: 10px;
+    .container {
+        max-width: 100%;  /* Aseguramos que el contenedor sea flexible */
     }
 }
