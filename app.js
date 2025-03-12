@@ -20,13 +20,12 @@ async function fetchBalance() {
     document.getElementById('balance').innerText = 'Loading...';
     document.getElementById('balance-usd').innerText = '';
 
-    // Fetch balance and BNS address
     let balance = null;
     if (address.includes('.btc')) {
-        // Fetch BNS (flor.btc) address details
+        // Aquí llamamos al endpoint de tu API proxy (hiro-proxy.js) para obtener el balance BNS
         balance = await getBnsBalance(address);
     } else {
-        // Fetch STX balance
+        // Fetch STX balance (esto sigue igual)
         balance = await getBalance(address);
     }
 
@@ -46,7 +45,21 @@ async function fetchBalance() {
     }
 }
 
-// Fetch wallet balance
+// Fetch BNS balance (esto ahora usa tu proxy de la API)
+async function getBnsBalance(bns) {
+    const url = `/api/hiro-proxy?name=${bns}`;  // Aquí llamamos a la ruta de tu API
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        const stxAddress = data.address;
+        return await getBalance(stxAddress); // Usamos la dirección STX para obtener el balance
+    } catch (error) {
+        console.error('Error fetching BNS balance:', error);
+        return null;
+    }
+}
+
+// Fetch STX balance
 async function getBalance(address) {
     const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}`;
     try {
@@ -55,20 +68,6 @@ async function getBalance(address) {
         return data.balance / 1000000; // Convert from microSTX to STX
     } catch (error) {
         console.error('Error fetching balance:', error);
-        return null;
-    }
-}
-
-// Fetch BNS address balance
-async function getBnsBalance(bns) {
-    const url = `https://api.hiro.so/v1/names/${bns}`;
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-        const stxAddress = data.address;
-        return await getBalance(stxAddress); // Use the Stacks address to get the balance
-    } catch (error) {
-        console.error('Error fetching BNS balance:', error);
         return null;
     }
 }
