@@ -18,8 +18,7 @@ async function fetchBalance() {
     document.getElementById('balance-usd').innerText = '';
     document.getElementById('transactions-list').innerHTML = '';
 
-    // Convertir la dirección a minúsculas
-    const addressLowerCase = address.toLowerCase(); // Aseguramos que la dirección esté en minúsculas
+    const addressLowerCase = address.toLowerCase();
 
     let balance = null;
     let transactions = null;
@@ -27,10 +26,12 @@ async function fetchBalance() {
     // Verificamos si es un nombre BNS o una dirección STX
     if (addressLowerCase.includes('.btc')) {
         // Consultar balance y transacciones para BNS
+        console.log("Detected BNS address");
         balance = await getBnsBalance(addressLowerCase);
         transactions = await getBnsTransactions(addressLowerCase);
     } else {
         // Consultar balance y transacciones para una dirección STX
+        console.log("Detected STX address");
         balance = await getBalance(addressLowerCase);
         transactions = await getTransactions(addressLowerCase);
     }
@@ -73,7 +74,12 @@ async function getBalance(address) {
     try {
         const response = await fetch(url);
         const data = await response.json();
-        return data.balance / 1000000; // Convertir de microSTX a STX
+        if (data.balance) {
+            return data.balance / 1000000; // Convertir de satoshis a STX
+        } else {
+            console.error("Balance not found:", data);
+            return null;
+        }
     } catch (error) {
         console.error('Error fetching balance:', error);
         return null;
@@ -86,8 +92,12 @@ async function getBnsBalance(bns) {
     try {
         const response = await fetch(url);
         const data = await response.json();
-        const stxAddress = data.address;
-        return await getBalance(stxAddress); // Usamos la dirección STX para obtener el balance
+        if (data.address) {
+            return await getBalance(data.address); // Usamos la dirección STX para obtener el balance
+        } else {
+            console.error("BNS data does not contain address:", data);
+            return null;
+        }
     } catch (error) {
         console.error('Error fetching BNS balance:', error);
         return null;
