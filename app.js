@@ -51,7 +51,7 @@ async function fetchBalance() {
 
 // Fetch STX balance for a long address (e.g., SP1PGB1T5KRNWZGDS1JEV7775HJMYBSEM2Z333Y8Y)
 async function getStxBalance(address) {
-    const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}`;
+    const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${encodeURIComponent(address)}`;
     try {
         const response = await fetch(url);
         const data = await response.json();
