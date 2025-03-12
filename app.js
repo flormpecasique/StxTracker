@@ -13,30 +13,27 @@ async function fetchBalance() {
         return;
     }
 
-    // Convertir a minúsculas
-    address = address.toLowerCase();
+    // Convert the address to lowercase
+    address = address.toLowerCase();  // Convierte la dirección a minúsculas
 
-    // Mostrar mensaje de carga
+    // Clear previous results
     document.getElementById('balance').innerText = 'Loading...';
     document.getElementById('balance-usd').innerText = '';
 
+    // Fetch balance and BNS address
     let balance = null;
-
     if (address.includes('.btc')) {
-        // Si es un BNS, obtener la dirección STX desde el proxy en Vercel
-        const stxAddress = await getBnsAddress(address);
-        if (stxAddress) {
-            balance = await getBalance(stxAddress);
-        }
+        // Fetch BNS (flor.btc) address details
+        balance = await getBnsBalance(address);
     } else {
-        // Si es una dirección STX, obtener balance directamente
+        // Fetch STX balance
         balance = await getBalance(address);
     }
 
     if (balance !== null) {
         document.getElementById('balance').innerText = `${balance} STX`;
 
-        // Obtener precio de STX en USD
+        // Fetch STX price in USD
         const stxPrice = await getStxPrice();
         if (stxPrice !== null) {
             const balanceInUsd = (balance * stxPrice).toFixed(2);
@@ -49,61 +46,45 @@ async function fetchBalance() {
     }
 }
 
-// Obtener la dirección STX desde un nombre BNS usando el proxy en Vercel
-async function getBnsAddress(bns) {
-    const url = `/api/hiro-proxy?name=${bns}`; // Aquí corregí el parámetro
-
-    try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-        const data = await response.json();
-
-        if (data.address) {
-            return data.address; // Retorna la dirección STX
-        } else {
-            console.error('BNS address not found in API response:', data);
-            return null;
-        }
-    } catch (error) {
-        console.error('Error fetching BNS address:', error);
-        return null;
-    }
-}
-
-// Obtener el balance de STX desde una dirección STX
+// Fetch wallet balance
 async function getBalance(address) {
     const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}`;
     try {
         const response = await fetch(url);
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
         const data = await response.json();
-
-        if (data.stx && data.stx.balance) {
-            return data.stx.balance / 1000000; // Convertir de microSTX a STX
-        } else {
-            console.error('STX balance not found in API response:', data);
-            return null;
-        }
+        return data.balance / 1000000; // Convert from microSTX to STX
     } catch (error) {
         console.error('Error fetching balance:', error);
         return null;
     }
 }
 
-// Obtener el precio de STX en USD
-async function getStxPrice() {
-    const url = 'https://api.coingecko.com/api/v3/simple/price?ids=stacks&vs_currencies=usd';
+// Fetch BNS address balance
+async function getBnsBalance(bns) {
+    const url = `https://api.hiro.so/v1/names/${bns}`;
     try {
         const response = await fetch(url);
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
         const data = await response.json();
-
-        if (data.stacks && data.stacks.usd) {
-            return data.stacks.usd;
+        if (data.address) {
+            const stxAddress = data.address;
+            return await getBalance(stxAddress); // Use the Stacks address to get the balance
         } else {
-            console.error('STX price not found in API response:', data);
+            console.error('No address found for BNS:', bns);
             return null;
         }
+    } catch (error) {
+        console.error('Error fetching BNS balance:', error);
+        return null;
+    }
+}
+
+// Fetch STX price in USD
+async function getStxPrice() {
+    const url = 'https://api.coingecko.com/api/v3/simple/price?ids=blockstack&vs_currencies=usd';
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        return data.blockstack.usd;
     } catch (error) {
         console.error('Error fetching STX price:', error);
         return null;
