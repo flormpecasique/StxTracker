@@ -25,9 +25,12 @@ async function fetchBalance() {
     if (address.includes('.btc')) {
         // Fetch BNS (flor.btc) address details
         balance = await getBnsBalance(address);
+    } else if (address.startsWith('SP')) {
+        // Fetch STX balance for long address (e.g., SP1PGB1T5KRNWZGDS1JEV7775HJMYBSEM2Z333Y8Y)
+        balance = await getStxBalance(address);
     } else {
-        // Check if it's a valid STX address
-        balance = await getBalance(address);
+        alert('Invalid STX address or BNS name.');
+        return;
     }
 
     if (balance !== null) {
@@ -46,15 +49,15 @@ async function fetchBalance() {
     }
 }
 
-// Fetch wallet balance
-async function getBalance(address) {
+// Fetch STX balance for a long address (e.g., SP1PGB1T5KRNWZGDS1JEV7775HJMYBSEM2Z333Y8Y)
+async function getStxBalance(address) {
     const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}`;
     try {
         const response = await fetch(url);
         const data = await response.json();
         return data.balance / 1000000; // Convert from microSTX to STX
     } catch (error) {
-        console.error('Error fetching balance:', error);
+        console.error('Error fetching STX balance:', error);
         return null;
     }
 }
@@ -66,7 +69,7 @@ async function getBnsBalance(bns) {
         const response = await fetch(url);
         const data = await response.json();
         const stxAddress = data.address;
-        return await getBalance(stxAddress); // Use the Stacks address to get the balance
+        return await getStxBalance(stxAddress); // Use the Stacks address to get the balance
     } catch (error) {
         console.error('Error fetching BNS balance:', error);
         return null;
