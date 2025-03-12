@@ -7,76 +7,78 @@ document.getElementById('stx-address').addEventListener('keydown', function(even
 
 async function fetchBalance() {
     let address = document.getElementById('stx-address').value.trim();
-    
+
     if (!address) {
         alert('Please enter a valid STX wallet address or BNS name.');
         return;
     }
 
-    address = address.toLowerCase();
+    // Clear previous results
     document.getElementById('balance').innerText = 'Loading...';
     document.getElementById('balance-usd').innerText = '';
 
     let finalAddress = address;
     if (address.includes('.btc')) {
-        finalAddress = await resolveBnsAddress(address);
+        finalAddress = await getBnsAddress(address);
         if (!finalAddress) {
-            document.getElementById('balance').innerText = 'Invalid BNS name.';
+            document.getElementById('balance').innerText = 'BNS name not found.';
             return;
         }
     }
 
-    const balance = await getBalance(finalAddress);
+    const balance = await getStxBalance(finalAddress);
     if (balance !== null) {
         document.getElementById('balance').innerText = `${balance} STX`;
-        
-        const priceUSD = await getSTXPriceUSD();
-        if (priceUSD !== null) {
-            const balanceUSD = (balance * priceUSD).toFixed(2);
-            document.getElementById('balance-usd').innerText = `≈ ${balanceUSD} USD`;
+
+        const stxPrice = await getStxPrice();
+        if (stxPrice !== null) {
+            const balanceInUsd = (balance * stxPrice).toFixed(2);
+            document.getElementById('balance-usd').innerText = `≈ $${balanceInUsd} USD`;
         } else {
-            document.getElementById('balance-usd').innerText = 'Could not retrieve STX price in USD.';
+            document.getElementById('balance-usd').innerText = 'Could not retrieve STX price.';
         }
     } else {
-        document.getElementById('balance').innerText = 'Unable to retrieve the balance.';
+        document.getElementById('balance').innerText = 'Could not retrieve balance.';
     }
 }
 
-async function getBalance(address) {
-    const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}`;
-    try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error('Failed to fetch balance');
-        const data = await response.json();
-        return data.stx_balance ? data.stx_balance / 1000000 : 0;
-    } catch (error) {
-        console.error('Error getting balance:', error);
-        return null;
-    }
-}
-
-async function resolveBnsAddress(bns) {
+// Fetch BNS address
+async function getBnsAddress(bns) {
     const url = `https://api.hiro.so/v1/names/${bns}`;
     try {
         const response = await fetch(url);
-        if (!response.ok) throw new Error('Failed to fetch BNS address');
+        if (!response.ok) throw new Error('BNS not found');
         const data = await response.json();
         return data.address || null;
     } catch (error) {
-        console.error('Error resolving BNS:', error);
+        console.error('Error fetching BNS address:', error);
         return null;
     }
 }
 
-async function getSTXPriceUSD() {
+// Fetch STX balance
+async function getStxBalance(address) {
+    const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}`;
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Address not found');
+        const data = await response.json();
+        return data.stx_balance ? data.stx_balance / 1000000 : 0;
+    } catch (error) {
+        console.error('Error fetching balance:', error);
+        return null;
+    }
+}
+
+// Fetch STX price in USD
+async function getStxPrice() {
     const url = 'https://api.coingecko.com/api/v3/simple/price?ids=blockstack&vs_currencies=usd';
     try {
         const response = await fetch(url);
-        if (!response.ok) throw new Error('Failed to fetch STX price');
         const data = await response.json();
         return data.blockstack?.usd || null;
     } catch (error) {
-        console.error('Error getting STX price:', error);
+        console.error('Error fetching STX price:', error);
         return null;
     }
 }
