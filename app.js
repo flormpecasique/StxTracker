@@ -112,5 +112,3 @@ async function getStxPrice() {
         return null;
     }
 }
-
-
