@@ -1,73 +1,87 @@
-document.getElementById('check-balance').addEventListener('click', async function() {
-    const address = document.getElementById('stx-address').value.trim();
-    
-    if (!address) {
-        alert('Por favor, ingresa una dirección de billetera STX válida.');
-        return;
-    }
-
-    // Limpiar resultados previos
-    document.getElementById('balance').innerText = '';
-    document.getElementById('transactions-list').innerHTML = '';
-
-    // Consultar el balance
-    const balance = await getBalance(address);
-    if (balance !== null) {
-        document.getElementById('balance').innerText = `${balance} STX`;
-    } else {
-        document.getElementById('balance').innerText = 'No se pudo obtener el balance.';
-    }
-
-    // Consultar las transacciones recientes
-    const transactions = await getTransactions(address);
-    const recentTransactions = filterRecentTransactions(transactions);
-
-    if (recentTransactions.length > 0) {
-        const transactionsList = document.getElementById('transactions-list');
-        recentTransactions.forEach(tx => {
-            const listItem = document.createElement('li');
-            listItem.textContent = `Tx ID: ${tx.tx_id}, Block: ${tx.block_height}, Fecha: ${new Date(tx.block_time * 1000).toLocaleString()}`;
-            transactionsList.appendChild(listItem);
-        });
-    } else {
-        const transactionsList = document.getElementById('transactions-list');
-        transactionsList.innerHTML = '<li>No se encontraron transacciones recientes en las últimas 72 horas.</li>';
+document.getElementById('check-balance').addEventListener('click', fetchBalance);
+document.getElementById('stx-address').addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        fetchBalance();
     }
 });
 
-// Obtener el balance de la dirección
+async function fetchBalance() {
+    let address = document.getElementById('stx-address').value.trim();
+
+    if (!address) {
+        alert('Please enter a valid STX wallet address or BNS name.');
+        return;
+    }
+
+    // Convert the address to lowercase
+    address = address.toLowerCase();  // Convierte la dirección a minúsculas
+
+    // Clear previous results
+    document.getElementById('balance').innerText = 'Loading...';
+    document.getElementById('balance-usd').innerText = '';
+
+    // Fetch balance and BNS address
+    let balance = null;
+    if (address.includes('.btc')) {
+        // Fetch BNS (flor.btc) address details
+        balance = await getBnsBalance(address);
+    } else {
+        // Fetch STX balance
+        balance = await getBalance(address);
+    }
+
+    if (balance !== null) {
+        document.getElementById('balance').innerText = `${balance} STX`;
+
+        // Fetch STX price in USD
+        const stxPrice = await getStxPrice();
+        if (stxPrice !== null) {
+            const balanceInUsd = (balance * stxPrice).toFixed(2);
+            document.getElementById('balance-usd').innerText = `≈ $${balanceInUsd} USD`;
+        } else {
+            document.getElementById('balance-usd').innerText = 'Could not retrieve STX price in USD.';
+        }
+    } else {
+        document.getElementById('balance').innerText = 'Could not retrieve balance.';
+    }
+}
+
+// Fetch wallet balance
 async function getBalance(address) {
     const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}`;
     try {
         const response = await fetch(url);
         const data = await response.json();
-        return data.balance / 1000000; // Convertir satoshis a STX
+        return data.balance / 1000000; // Convert from microSTX to STX
     } catch (error) {
-        console.error('Error al obtener el balance:', error);
+        console.error('Error fetching balance:', error);
         return null;
     }
 }
 
-// Obtener las transacciones de la dirección
-async function getTransactions(address) {
-    const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}/transactions`;
+// Fetch BNS address balance
+async function getBnsBalance(bns) {
+    const url = `https://api.hiro.so/v1/names/${bns}`;
     try {
         const response = await fetch(url);
         const data = await response.json();
-        return data.results || []; // Devolver transacciones o un array vacío
+        const stxAddress = data.address;
+        return await getBalance(stxAddress); // Use the Stacks address to get the balance
     } catch (error) {
-        console.error('Error al obtener las transacciones:', error);
-        return [];
+        console.error('Error fetching BNS balance:', error);
+        return null;
     }
 }
 
-// Filtrar transacciones que ocurrieron en las últimas 72 horas
-function filterRecentTransactions(transactions) {
-    const now = Date.now(); // Tiempo actual en milisegundos
-    const seventyTwoHoursInMs = 72 * 60 * 60 * 1000; // 72 horas en milisegundos
-    
-    return transactions.filter(tx => {
-        const txTime = tx.block_time * 1000; // Convertir el tiempo del bloque a milisegundos
-        return now - txTime <= seventyTwoHoursInMs; // Filtrar transacciones de las últimas 72 horas
-    });
+// Fetch STX price in USD
+async function getStxPrice() {
+    const url = 'https://api.coingecko.com/api/v3/simple/price?ids=blockstack&vs_currencies=usd';
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        return data.blockstack.usd;
+    } catch (error) {
+        console.error('Error fetching STX price:', error);
+        return null;
+    }
 }
