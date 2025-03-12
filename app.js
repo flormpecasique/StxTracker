@@ -52,7 +52,7 @@ async function getBalance(address) {
     try {
         const response = await fetch(url);
         const data = await response.json();
-        return data.balance / 1000000; // Convert from microSTX to STX
+        return data.stx?.balance ? data.stx.balance / 1000000 : null;
     } catch (error) {
         console.error('Error fetching balance:', error);
         return null;
