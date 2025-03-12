@@ -23,7 +23,7 @@ async function fetchBalance() {
     // Fetch balance and BNS address
     let balance = null;
     if (address.includes('.btc')) {
-        // Fetch BNS address balance (ejemplo: flor.btc)
+        // Fetch BNS (flor.btc) address details
         balance = await getBnsBalance(address);
     } else if (address.startsWith('SP')) {
         // Fetch STX balance for long addresses (starts with 'SP')
@@ -55,6 +55,7 @@ async function getBalance(address) {
     try {
         const response = await fetch(url);
         const data = await response.json();
+        console.log('Short address response:', data); // Verifica la respuesta
         return data.balance / 1000000; // Convert from microSTX to STX
     } catch (error) {
         console.error('Error fetching balance:', error);
@@ -62,30 +63,27 @@ async function getBalance(address) {
     }
 }
 
-// Fetch BNS address balance (dirección corta como flor.btc)
+// Fetch BNS address balance
 async function getBnsBalance(bns) {
     const url = `https://api.hiro.so/v1/names/${bns}`;
     try {
         const response = await fetch(url);
         const data = await response.json();
-        
-        // Se obtiene la dirección STX real (larga) asociada al nombre BNS
         const stxAddress = data.address;
-        
-        // Usar esa dirección STX para obtener el balance
-        return await getBalance(stxAddress); // Llama a la función que obtiene el balance de una dirección STX
+        return await getBalance(stxAddress); // Use the Stacks address to get the balance
     } catch (error) {
         console.error('Error fetching BNS balance:', error);
         return null;
     }
 }
 
-// Fetch wallet balance for long addresses (direcciones largas que empiezan con SP)
+// Función para obtener el balance STX para direcciones largas
 async function getLongAddressBalance(address) {
     const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}`;
     try {
         const response = await fetch(url);
         const data = await response.json();
+        console.log('Long address response:', data); // Verifica la respuesta
 
         // Verifica si se encontró el balance en microSTX
         if (data && data.stx_balance !== undefined) {
@@ -114,4 +112,5 @@ async function getStxPrice() {
         return null;
     }
 }
+
 
