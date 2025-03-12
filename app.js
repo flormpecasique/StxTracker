@@ -23,10 +23,10 @@ async function fetchBalance() {
     // Fetch balance and BNS address
     let balance = null;
     if (address.includes('.btc')) {
-        // Fetch BNS (flor.btc) address details
+        // Fetch BNS (flor.btc) address details (con API Key)
         balance = await getBnsBalance(address);
     } else {
-        // Fetch STX balance
+        // Fetch STX balance (sin necesidad de API Key)
         balance = await getBalance(address);
     }
 
@@ -46,7 +46,7 @@ async function fetchBalance() {
     }
 }
 
-// Fetch wallet balance
+// Fetch wallet balance (sin API Key para direcciones STX)
 async function getBalance(address) {
     const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}`;
     try {
@@ -59,15 +59,20 @@ async function getBalance(address) {
     }
 }
 
-// Fetch BNS address balance
+// Fetch BNS address balance (con API Key para nombres BNS)
 async function getBnsBalance(bns) {
+    const apiKey = process.env.HIRO_API_KEY; // Asegúrate de que la API Key esté configurada en Vercel
     const url = `https://api.hiro.so/v1/names/${bns}`;
     try {
-        const response = await fetch(url);
+        const response = await fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${apiKey}`
+            }
+        });
         const data = await response.json();
         if (data.address) {
             const stxAddress = data.address;
-            return await getBalance(stxAddress); // Use the Stacks address to get the balance
+            return await getBalance(stxAddress); // Usa la dirección STX obtenida para consultar el balance
         } else {
             console.error('No address found for BNS:', bns);
             return null;
