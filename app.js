@@ -23,7 +23,7 @@ async function fetchBalance() {
     // Fetch balance and BNS address
     let balance = null;
     if (address.includes('.btc')) {
-        // Fetch BNS (flor.btc) address details
+        // Fetch BNS address balance (ejemplo: flor.btc)
         balance = await getBnsBalance(address);
     } else if (address.startsWith('SP')) {
         // Fetch STX balance for long addresses (starts with 'SP')
@@ -62,21 +62,25 @@ async function getBalance(address) {
     }
 }
 
-// Fetch BNS address balance
+// Fetch BNS address balance (dirección corta como flor.btc)
 async function getBnsBalance(bns) {
     const url = `https://api.hiro.so/v1/names/${bns}`;
     try {
         const response = await fetch(url);
         const data = await response.json();
+        
+        // Se obtiene la dirección STX real (larga) asociada al nombre BNS
         const stxAddress = data.address;
-        return await getBalance(stxAddress); // Use the Stacks address to get the balance
+        
+        // Usar esa dirección STX para obtener el balance
+        return await getBalance(stxAddress); // Llama a la función que obtiene el balance de una dirección STX
     } catch (error) {
         console.error('Error fetching BNS balance:', error);
         return null;
     }
 }
 
-// Función para obtener el balance STX para direcciones largas
+// Fetch wallet balance for long addresses (direcciones largas que empiezan con SP)
 async function getLongAddressBalance(address) {
     const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}`;
     try {
@@ -98,8 +102,6 @@ async function getLongAddressBalance(address) {
     }
 }
 
-
-
 // Fetch STX price in USD
 async function getStxPrice() {
     const url = 'https://api.coingecko.com/api/v3/simple/price?ids=blockstack&vs_currencies=usd';
@@ -112,3 +114,4 @@ async function getStxPrice() {
         return null;
     }
 }
+
