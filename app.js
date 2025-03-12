@@ -1,5 +1,5 @@
 document.getElementById('check-balance').addEventListener('click', async function () {
-    const input = document.getElementById('stx-address').value.trim().toLowerCase(); // Convertir todo a minúsculas
+    const input = document.getElementById('stx-address').value.trim();
     
     if (!input) {
         alert('Please enter a valid STX address or BNS name.');
@@ -39,13 +39,6 @@ document.getElementById('check-balance').addEventListener('click', async functio
         document.getElementById('balance-usd').innerText = `≈ ${balanceUSD} USD`;
     } else {
         document.getElementById('balance').innerText = 'Unable to retrieve the balance.';
-    }
-});
-
-// Allow search with Enter key
-document.getElementById('stx-address').addEventListener('keydown', function(event) {
-    if (event.key === 'Enter') {
-        document.getElementById('check-balance').click();
     }
 });
 
