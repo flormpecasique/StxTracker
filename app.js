@@ -13,7 +13,7 @@ async function fetchBalance() {
         return;
     }
 
-    // Convertir a minúsculas por si hay mayúsculas en BNS
+    // Convertir a minúsculas
     address = address.toLowerCase();
 
     // Mostrar mensaje de carga
@@ -23,7 +23,7 @@ async function fetchBalance() {
     let balance = null;
 
     if (address.includes('.btc')) {
-        // Si es un BNS, obtener la dirección STX
+        // Si es un BNS, obtener la dirección STX desde el proxy en Vercel
         const stxAddress = await getBnsAddress(address);
         if (stxAddress) {
             balance = await getBalance(stxAddress);
@@ -49,9 +49,10 @@ async function fetchBalance() {
     }
 }
 
-// Obtener la dirección STX desde un nombre BNS
+// Obtener la dirección STX desde un nombre BNS usando el proxy en Vercel
 async function getBnsAddress(bns) {
-    const url = `https://api.hiro.so/v1/names/${bns}`;
+    const url = `/api/hiro-proxy?name=${bns}`; // Aquí corregí el parámetro
+
     try {
         const response = await fetch(url);
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
