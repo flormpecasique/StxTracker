@@ -13,30 +13,30 @@ async function fetchBalance() {
         return;
     }
 
-    // Convertir la dirección a minúsculas
-    address = address.toLowerCase();  
+    // Convertir a minúsculas por si hay mayúsculas en BNS
+    address = address.toLowerCase();
 
-    // Limpiar resultados previos
+    // Mostrar mensaje de carga
     document.getElementById('balance').innerText = 'Loading...';
     document.getElementById('balance-usd').innerText = '';
 
     let balance = null;
 
     if (address.includes('.btc')) {
-        // Es un nombre BNS, obtenemos su dirección STX
+        // Si es un BNS, obtener la dirección STX
         const stxAddress = await getBnsAddress(address);
         if (stxAddress) {
             balance = await getBalance(stxAddress);
         }
     } else {
-        // Es una dirección STX directamente
+        // Si es una dirección STX, obtener balance directamente
         balance = await getBalance(address);
     }
 
     if (balance !== null) {
         document.getElementById('balance').innerText = `${balance} STX`;
 
-        // Obtener el precio de STX en USD
+        // Obtener precio de STX en USD
         const stxPrice = await getStxPrice();
         if (stxPrice !== null) {
             const balanceInUsd = (balance * stxPrice).toFixed(2);
@@ -49,7 +49,7 @@ async function fetchBalance() {
     }
 }
 
-// Obtener la dirección STX desde un BNS
+// Obtener la dirección STX desde un nombre BNS
 async function getBnsAddress(bns) {
     const url = `https://api.hiro.so/v1/names/${bns}`;
     try {
@@ -69,7 +69,7 @@ async function getBnsAddress(bns) {
     }
 }
 
-// Obtener el saldo STX desde una dirección STX
+// Obtener el balance de STX desde una dirección STX
 async function getBalance(address) {
     const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}`;
     try {
