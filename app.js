@@ -59,6 +59,7 @@ async function getBalance(address) {
     }
 }
 
+
 // Fetch BNS address balance
 async function getBnsBalance(bns) {
     const url = `https://api.hiro.so/v1/names/${bns}`;
