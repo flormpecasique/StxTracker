@@ -82,12 +82,20 @@ async function getLongAddressBalance(address) {
     try {
         const response = await fetch(url);
         const data = await response.json();
-        return data.balance / 1000000; // Convert from microSTX to STX
+
+        // Revisamos la estructura de los datos para asegurarnos de extraer el balance correctamente
+        if (data && data.balance) {
+            return data.balance / 1000000; // Convert from microSTX to STX
+        } else {
+            console.error('Balance not found in the response:', data);
+            return null;
+        }
     } catch (error) {
         console.error('Error fetching long address balance:', error);
         return null;
     }
 }
+
 
 // Fetch STX price in USD
 async function getStxPrice() {
