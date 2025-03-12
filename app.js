@@ -13,27 +13,30 @@ async function fetchBalance() {
         return;
     }
 
-    // Convert the address to lowercase
-    address = address.toLowerCase();  // Convierte la dirección a minúsculas
+    // Convertir la dirección a minúsculas
+    address = address.toLowerCase();  
 
-    // Clear previous results
+    // Limpiar resultados previos
     document.getElementById('balance').innerText = 'Loading...';
     document.getElementById('balance-usd').innerText = '';
 
-    // Fetch balance and BNS address
     let balance = null;
+
     if (address.includes('.btc')) {
-        // Fetch BNS (flor.btc) address details
-        balance = await getBnsBalance(address);
+        // Es un nombre BNS, obtenemos su dirección STX
+        const stxAddress = await getBnsAddress(address);
+        if (stxAddress) {
+            balance = await getBalance(stxAddress);
+        }
     } else {
-        // Fetch STX balance
+        // Es una dirección STX directamente
         balance = await getBalance(address);
     }
 
     if (balance !== null) {
         document.getElementById('balance').innerText = `${balance} STX`;
 
-        // Fetch STX price in USD
+        // Obtener el precio de STX en USD
         const stxPrice = await getStxPrice();
         if (stxPrice !== null) {
             const balanceInUsd = (balance * stxPrice).toFixed(2);
@@ -46,41 +49,60 @@ async function fetchBalance() {
     }
 }
 
-// Fetch wallet balance
+// Obtener la dirección STX desde un BNS
+async function getBnsAddress(bns) {
+    const url = `https://api.hiro.so/v1/names/${bns}`;
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const data = await response.json();
+
+        if (data.address) {
+            return data.address; // Retorna la dirección STX
+        } else {
+            console.error('BNS address not found in API response:', data);
+            return null;
+        }
+    } catch (error) {
+        console.error('Error fetching BNS address:', error);
+        return null;
+    }
+}
+
+// Obtener el saldo STX desde una dirección STX
 async function getBalance(address) {
     const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}`;
     try {
         const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
         const data = await response.json();
-        return data.stx?.balance ? data.stx.balance / 1000000 : null;
+
+        if (data.stx && data.stx.balance) {
+            return data.stx.balance / 1000000; // Convertir de microSTX a STX
+        } else {
+            console.error('STX balance not found in API response:', data);
+            return null;
+        }
     } catch (error) {
         console.error('Error fetching balance:', error);
         return null;
     }
 }
 
-
-// Fetch BNS address balance
-async function getBnsBalance(bns) {
-    const url = `https://api.hiro.so/v1/names/${bns}`;
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-        const stxAddress = data.address;
-        return await getBalance(stxAddress); // Use the Stacks address to get the balance
-    } catch (error) {
-        console.error('Error fetching BNS balance:', error);
-        return null;
-    }
-}
-
-// Fetch STX price in USD
+// Obtener el precio de STX en USD
 async function getStxPrice() {
-    const url = 'https://api.coingecko.com/api/v3/simple/price?ids=blockstack&vs_currencies=usd';
+    const url = 'https://api.coingecko.com/api/v3/simple/price?ids=stacks&vs_currencies=usd';
     try {
         const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
         const data = await response.json();
-        return data.blockstack.usd;
+
+        if (data.stacks && data.stacks.usd) {
+            return data.stacks.usd;
+        } else {
+            console.error('STX price not found in API response:', data);
+            return null;
+        }
     } catch (error) {
         console.error('Error fetching STX price:', error);
         return null;
