@@ -1,10 +1,3 @@
-document.getElementById('check-balance').addEventListener('click', fetchBalance);
-document.getElementById('stx-address').addEventListener('keydown', function(event) {
-    if (event.key === 'Enter') {
-        fetchBalance();
-    }
-});
-
 async function fetchBalance() {
     let address = document.getElementById('stx-address').value.trim();
 
@@ -26,7 +19,7 @@ async function fetchBalance() {
         // Fetch BNS (flor.btc) address details
         balance = await getBnsBalance(address);
     } else {
-        // Fetch STX balance
+        // Check if it's a valid STX address
         balance = await getBalance(address);
     }
 
