@@ -76,25 +76,28 @@ async function getBnsBalance(bns) {
     }
 }
 
-// Fetch STX balance for long addresses (starts with 'SP')
+// Función para obtener el balance STX para direcciones largas
 async function getLongAddressBalance(address) {
     const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}`;
     try {
         const response = await fetch(url);
         const data = await response.json();
 
-        // Revisamos la estructura de los datos para asegurarnos de extraer el balance correctamente
-        if (data && data.balance) {
-            return data.balance / 1000000; // Convert from microSTX to STX
+        // Verifica si se encontró el balance en microSTX
+        if (data && data.stx_balance !== undefined) {
+            // Convertir microSTX a STX
+            const balanceSTX = data.stx_balance / 1000000;
+            return balanceSTX;
         } else {
-            console.error('Balance not found in the response:', data);
+            console.error('Balance STX no encontrado en la respuesta:', data);
             return null;
         }
     } catch (error) {
-        console.error('Error fetching long address balance:', error);
+        console.error('Error al obtener el balance de la dirección larga:', error);
         return null;
     }
 }
+
 
 
 // Fetch STX price in USD
