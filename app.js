@@ -29,7 +29,7 @@ async function fetchBalance() {
         // Fetch STX balance for long address (e.g., SP1PGB1T5KRNWZGDS1JEV7775HJMYBSEM2Z333Y8Y)
         balance = await getStxBalance(address);
     } else {
-        alert('Invalid STX address or BNS name.');
+        alert('Invalid address format. Please enter a valid STX address or BNS name.');
         return;
     }
 
@@ -55,7 +55,10 @@ async function getStxBalance(address) {
     try {
         const response = await fetch(url);
         const data = await response.json();
-        return data.balance / 1000000; // Convert from microSTX to STX
+        if (data.balance) {
+            return data.balance / 1000000; // Convert from microSTX to STX
+        }
+        return null; // If balance is not found
     } catch (error) {
         console.error('Error fetching STX balance:', error);
         return null;
