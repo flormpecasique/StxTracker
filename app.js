@@ -1,6 +1,6 @@
 document.getElementById('check-balance').addEventListener('click', async function () {
-    const input = document.getElementById('stx-address').value.trim().toLowerCase(); // Convertimos a minúsculas
-    
+    let input = document.getElementById('stx-address').value.trim();
+
     if (!input) {
         alert('Please enter a valid STX address or BNS name.');
         return;
@@ -11,11 +11,12 @@ document.getElementById('check-balance').addEventListener('click', async functio
     document.getElementById('balance-usd').innerText = '';
     
     let address;
+
     if (input.endsWith('.btc')) {
-        // If input is a BNS name, resolve to Stacks address
-        address = await getStacksAddressFromBNS(input);
+        // If input is a BNS name, convert to lowercase and resolve to Stacks address
+        address = await getStacksAddressFromBNS(input.toLowerCase()); // Convert BNS name to lowercase
     } else {
-        // Assume input is a direct Stacks address
+        // Assume input is a direct Stacks address (do not modify case)
         address = input;
     }
     
