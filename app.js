@@ -59,14 +59,15 @@ async function getBalance(address) {
     return null;
 }
 
-// NUEVO — Precio STX USD desde CoinGecko (100% funcional)
+// NUEVO — Precio STX USD desde Coinpaprika
 async function getSTXPriceUSD() {
-    const url = "https://api.coingecko.com/api/v3/coins/stacks";
+    const url = "https://api.coinpaprika.com/v1/tickers/stacks-stx";
 
     try {
         const response = await fetch(url);
+        if (!response.ok) throw new Error('Error fetching price');
         const data = await response.json();
-        return data.market_data?.current_price?.usd || null;
+        return data.quotes?.USD?.price || null;
     } catch (error) {
         console.error("Error getting STX price:", error);
         return null;
