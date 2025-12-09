@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Check STX Balance</title>
+    <title>STX Tracker</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -21,7 +21,10 @@
         <section class="results-section">
             <div id="balance-container">
                 <h2>STX Balance</h2>
-                <p id="balance">---</p>
+                <div class="balance-wrapper">
+                    <span id="balance">---</span>
+                    <div id="spinner" class="spinner hidden"></div>
+                </div>
                 <p id="balance-usd" class="balance-usd">---</p>
             </div>
         </section>
@@ -33,7 +36,7 @@
 
     <script src="app.js"></script>
     <script>
-        document.getElementById('year').textContent = new Date().getFullYear(); // Completar el código
+        document.getElementById('year').textContent = new Date().getFullYear();
     </script>
 </body>
 </html>
