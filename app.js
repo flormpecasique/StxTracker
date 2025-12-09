@@ -59,15 +59,12 @@ async function getBalance(address) {
     return null;
 }
 
-// NUEVO — Precio STX USD desde Coinpaprika
+// NUEVO — Precio STX USD desde Binance (funciona en navegador)
 async function getSTXPriceUSD() {
-    const url = "https://api.coinpaprika.com/v1/tickers/stacks-stx";
-
     try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error('Error fetching price');
+        const response = await fetch("https://api.binance.com/api/v3/ticker/price?symbol=STXUSDT");
         const data = await response.json();
-        return data.quotes?.USD?.price || null;
+        return parseFloat(data.price);
     } catch (error) {
         console.error("Error getting STX price:", error);
         return null;
