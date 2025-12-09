@@ -1,102 +1,87 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const input = document.getElementById("stx-address");
-    const button = document.getElementById("check-balance");
-    const balanceText = document.getElementById("balance");
-    const balanceUSD = document.getElementById("balance-usd");
-    const spinner = document.getElementById("spinner");
+document.getElementById('check-balance').addEventListener('click', async function () {
+    let input = document.getElementById('stx-address').value.trim();
 
-    // --- Resolver nombre .btc a dirección ---
-    async function resolveBNS(name) {
-        try {
-            const res = await fetch(`https://stacks-node-api.mainnet.stacks.co/v1/names/${name}`);
-            const data = await res.json();
-            return data.address || null;
-        } catch (e) {
-            console.error("Error resolving BNS:", e);
-            return null;
-        }
+    if (!input) {
+        alert('Please enter a valid STX address or BNS name.');
+        return;
     }
 
-    // --- Obtener precio del STX en USD ---
-    async function getSTXPrice() {
-        try {
-            const res = await fetch(
-                "https://api.coingecko.com/api/v3/simple/price?ids=stacks&vs_currencies=usd"
-            );
-            const data = await res.json();
+    // Limpiar resultados anteriores
+    document.getElementById('balance').innerText = 'Loading...';
+    document.getElementById('balance-usd').innerText = '';
+    
+    let address;
 
-            if (data?.stacks?.usd) return data.stacks.usd;
-
-            return null;
-        } catch (e) {
-            console.error("Error fetching price:", e);
-            return null;
-        }
+    if (input.endsWith('.btc')) {
+        address = await getStacksAddressFromBNS(input.toLowerCase());
+    } else {
+        address = input;
+    }
+    
+    if (!address) {
+        document.getElementById('balance').innerText = 'Invalid BNS name or address';
+        return;
     }
 
-    // --- Obtener balance STX de dirección ---
-    async function getSTXBalance(address) {
-        try {
-            const res = await fetch(
-                `https://stacks-node-api.mainnet.stacks.co/extended/v1/address/${address}/balances`
-            );
-            const data = await res.json();
-
-            if (!data?.stx?.balance) return null;
-
-            return data.stx.balance / 1_000_000; // microstacks → STX
-        } catch (e) {
-            console.error("Balance fetch error:", e);
-            return null;
-        }
+    const balance = await getBalance(address);
+    
+    if (balance !== null) {
+        const priceUSD = await getSTXPriceUSD();
+        const balanceUSD = priceUSD ? (balance * priceUSD).toFixed(2) : 'N/A';
+        
+        document.getElementById('balance').innerText = `${balance} STX`;
+        document.getElementById('balance-usd').innerText = `≈ ${balanceUSD} USD`;
+    } else {
+        document.getElementById('balance').innerText = 'Unable to retrieve the balance.';
     }
-
-    // --- Acción al pulsar el botón ---
-    button.addEventListener("click", async () => {
-        let address = input.value.trim();
-
-        if (!address) {
-            alert("Please enter a Stacks address or .btc name.");
-            return;
-        }
-
-        // Mostrar cargando
-        balanceText.textContent = "---";
-        balanceUSD.textContent = "---";
-        spinner.classList.remove("hidden");
-
-        // Resolver BNS si termina en .btc
-        if (address.endsWith(".btc")) {
-            const resolved = await resolveBNS(address.toLowerCase());
-            if (!resolved) {
-                spinner.classList.add("hidden");
-                balanceText.textContent = "Invalid .btc name";
-                return;
-            }
-            address = resolved;
-        }
-
-        // Obtener balance STX
-        const stxBalance = await getSTXBalance(address);
-        if (stxBalance === null) {
-            spinner.classList.add("hidden");
-            balanceText.textContent = "Error fetching balance";
-            return;
-        }
-
-        balanceText.textContent = `${stxBalance.toFixed(6)} STX`;
-
-        // Obtener precio STX → USD
-        const price = await getSTXPrice();
-        if (price === null) {
-            spinner.classList.add("hidden");
-            balanceUSD.textContent = "≈ N/A USD";
-            return;
-        }
-
-        const totalUSD = stxBalance * price;
-        balanceUSD.textContent = `≈ ${totalUSD.toFixed(2)} USD`;
-
-        spinner.classList.add("hidden");
-    });
 });
+
+document.getElementById('stx-address').addEventListener('keypress', function (event) {
+    if (event.key === 'Enter') {
+        document.getElementById('check-balance').click();
+    }
+});
+
+// Balance STX desde Hiro
+async function getBalance(address) {
+    const url = `https://api.hiro.so/extended/v1/address/${address}/balances`;
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Address not found');
+        const data = await response.json();
+
+        if (data.stx && data.stx.balance !== undefined) {
+            return Number(data.stx.balance) / 1_000_000;
+        }
+    } catch (error) {
+        console.error('Error getting balance:', error);
+    }
+    return null;
+}
+
+// NUEVO — Precio STX USD desde CoinGecko (100% funcional)
+async function getSTXPriceUSD() {
+    const url = "https://api.coingecko.com/api/v3/coins/stacks";
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        return data.market_data?.current_price?.usd || null;
+    } catch (error) {
+        console.error("Error getting STX price:", error);
+        return null;
+    }
+}
+
+async function getStacksAddressFromBNS(bnsName) {
+    const url = `/api/hiro-proxy?name=${bnsName}`;
+    try {
+        const response = await fetch(url);
+        if (!response.ok) return null;
+        const data = await response.json();
+        return data.address || null;
+    } catch (error) {
+        console.error('Error resolving BNS name:', error);
+        return null;
+    }
+}
