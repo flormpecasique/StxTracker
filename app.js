@@ -96,7 +96,7 @@ addressInput.addEventListener('keypress', (event) => {
 });
 
 // ------------------------------
-// API calls
+// STX Balance
 // ------------------------------
 async function getBalance(address) {
     const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}`;
@@ -104,13 +104,20 @@ async function getBalance(address) {
         const response = await fetch(url);
         const data = await response.json();
         log('Balance API data:', data);
-        if (data.balance) return Number(data.balance) / 1_000_000;
+
+        // ✅ Mostrar balance incluso si es 0
+        if (data.balance !== undefined && data.balance !== null) {
+            return Number(data.balance) / 1_000_000;
+        }
     } catch (error) {
         console.error('Error getting balance:', error);
     }
     return null;
 }
 
+// ------------------------------
+// STX Price USD
+// ------------------------------
 async function getSTXPriceUSD() {
     const url = 'https://api.coingecko.com/api/v3/simple/price?ids=stacks&vs_currencies=usd';
     try {
@@ -124,6 +131,9 @@ async function getSTXPriceUSD() {
     }
 }
 
+// ------------------------------
+// BNS Resolver usando tu proxy
+// ------------------------------
 async function getStacksAddressFromBNS(bnsName) {
     const url = `/api/hiro-proxy?name=${bnsName}`;
     try {
