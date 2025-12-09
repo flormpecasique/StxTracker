@@ -216,3 +216,36 @@ p, .descripcion {
         max-width: 100%;  /* Aseguramos que el contenedor sea flexible */
     }
 }
+
+
+/* Spinner */
+.spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #6a49e4;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.hidden {
+    display: none;
+}
+
+/* Resultado animado */
+#balance-container span#balance {
+    transition: all 0.3s ease;
+}
+
+#balance-container span#balance.loading {
+    color: #aaa;
+}
+
