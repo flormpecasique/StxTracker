@@ -1,90 +1,139 @@
-document.getElementById('check-balance').addEventListener('click', async function () {
-    let input = document.getElementById('stx-address').value.trim();
+const DEBUG = true;
 
+const addressInput = document.getElementById('stx-address');
+const checkBtn = document.getElementById('check-balance');
+const balanceEl = document.getElementById('balance');
+const balanceUsdEl = document.getElementById('balance-usd');
+const spinnerEl = document.getElementById('spinner');
+
+function log(...args) {
+    if (DEBUG) console.log('[DEBUG]', ...args);
+}
+
+async function checkBalance() {
+    const input = addressInput.value.trim();
     if (!input) {
         alert('Please enter a valid STX address or BNS name.');
         return;
     }
 
-    // Clear previous results
-    document.getElementById('balance').innerText = 'Loading...';
-    document.getElementById('balance-usd').innerText = '';
-    
-    let address;
-
-    if (input.endsWith('.btc')) {
-        // If input is a BNS name, convert to lowercase and resolve to Stacks address
-        address = await getStacksAddressFromBNS(input.toLowerCase()); // Convert BNS name to lowercase
-    } else {
-        // Assume input is a direct Stacks address (do not modify case)
-        address = input;
-    }
-    
-    if (!address) {
-        document.getElementById('balance').innerText = 'Invalid BNS name or address';
+    const cacheKey = `balance_${input}`;
+    const cached = sessionStorage.getItem(cacheKey);
+    if (cached) {
+        const { balance, usd } = JSON.parse(cached);
+        displayBalance(balance, usd);
+        log('Loaded from cache:', input);
         return;
     }
 
-    // Get the balance in STX
-    const balance = await getBalance(address);
-    
-    if (balance !== null) {
-        // Get the price of STX in USD
-        const priceUSD = await getSTXPriceUSD();
-        
-        // Calculate the value in USD
-        const balanceUSD = priceUSD ? (balance * priceUSD).toFixed(2) : 'N/A';
-        
-        // Display results on the page
-        document.getElementById('balance').innerText = `${balance} STX`;
-        document.getElementById('balance-usd').innerText = `≈ ${balanceUSD} USD`;
+    displayLoading(true);
+    disableButton(true);
+
+    let address;
+    if (input.endsWith('.btc')) {
+        address = await getStacksAddressFromBNS(input.toLowerCase());
     } else {
-        document.getElementById('balance').innerText = 'Unable to retrieve the balance.';
+        address = input;
     }
+
+    if (!address) {
+        displayBalance('Invalid BNS name or address', '');
+        displayLoading(false);
+        disableButton(false);
+        return;
+    }
+
+    const balance = await getBalance(address);
+    if (balance === null) {
+        displayBalance('Unable to retrieve the balance.', '');
+        displayLoading(false);
+        disableButton(false);
+        return;
+    }
+
+    const priceUSD = await getSTXPriceUSD();
+    const balanceUSD = priceUSD ? (balance * priceUSD).toFixed(2) : 'N/A';
+
+    sessionStorage.setItem(cacheKey, JSON.stringify({ balance, usd: balanceUSD }));
+
+    displayBalance(balance, balanceUSD);
+    displayLoading(false);
+    disableButton(false);
+}
+
+function displayBalance(balance, usd) {
+    balanceEl.innerText = typeof balance === 'number' ? `${balance} STX` : balance;
+    balanceUsdEl.innerText = usd ? `≈ ${usd} USD` : '';
+    balanceEl.classList.remove('loading');
+}
+
+function displayLoading(isLoading) {
+    if (isLoading) {
+        balanceEl.innerText = 'Loading...';
+        balanceUsdEl.innerText = '';
+        spinnerEl.classList.remove('hidden');
+        balanceEl.classList.add('loading');
+    } else {
+        spinnerEl.classList.add('hidden');
+        balanceEl.classList.remove('loading');
+    }
+}
+
+function disableButton(disable) {
+    if (disable) {
+        checkBtn.disabled = true;
+        checkBtn.classList.add('after-query');
+    } else {
+        checkBtn.disabled = false;
+        checkBtn.classList.remove('after-query');
+    }
+}
+
+// Event listeners
+checkBtn.addEventListener('click', checkBalance);
+addressInput.addEventListener('keypress', (event) => {
+    if (event.key === 'Enter') checkBalance();
 });
 
-// Allow the search to be triggered when pressing Enter
-document.getElementById('stx-address').addEventListener('keypress', function (event) {
-    if (event.key === 'Enter') {
-        document.getElementById('check-balance').click();
-    }
-});
-
-// Get the balance of the STX address
+// ------------------------------
+// API calls
+// ------------------------------
 async function getBalance(address) {
     const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}`;
     try {
         const response = await fetch(url);
         const data = await response.json();
-        
-        if (data.balance) {
-            return parseInt(data.balance, 16) / 1000000; // Convert hex balance to decimal STX
-        }
+        log('Balance API data:', data);
+        if (data.balance) return Number(data.balance) / 1_000_000;
     } catch (error) {
         console.error('Error getting balance:', error);
     }
     return null;
 }
 
-// Get the price of STX in USD
 async function getSTXPriceUSD() {
-    const url = 'https://api.coingecko.com/api/v3/simple/price?ids=blockstack&vs_currencies=usd';
+    const url = 'https://api.coingecko.com/api/v3/simple/price?ids=stacks&vs_currencies=usd';
     try {
         const response = await fetch(url);
         const data = await response.json();
-        return data.blockstack.usd;
+        log('Price API data:', data);
+        return data.stacks?.usd || null;
     } catch (error) {
         console.error('Error getting STX price:', error);
         return null;
     }
 }
 
-// Get Stacks address from BNS name
 async function getStacksAddressFromBNS(bnsName) {
-    const url = `https://api.hiro.so/v1/names/${bnsName}`;
+    const url = `/api/hiro-proxy?name=${bnsName}`;
     try {
         const response = await fetch(url);
+        if (!response.ok) {
+            console.error("Hiro proxy error:", await response.text());
+            return null;
+        }
         const data = await response.json();
+        log('BNS resolver data:', data);
         return data.address || null;
     } catch (error) {
         console.error('Error resolving BNS name:', error);
