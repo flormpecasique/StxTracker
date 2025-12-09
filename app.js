@@ -6,14 +6,14 @@ document.getElementById('check-balance').addEventListener('click', async functio
         return;
     }
 
-    // Clear previous results
+    // Limpiar resultados anteriores
     document.getElementById('balance').innerText = 'Loading...';
     document.getElementById('balance-usd').innerText = '';
     
     let address;
 
     if (input.endsWith('.btc')) {
-        // Resolver BNS usando Hiro
+        // Resolver BNS usando tu proxy de Hiro
         address = await getStacksAddressFromBNS(input.toLowerCase());
     } else {
         address = input;
@@ -24,10 +24,11 @@ document.getElementById('check-balance').addEventListener('click', async functio
         return;
     }
 
-    // Obtener el balance usando Hiro Extended API
+    // Obtener balance usando Hiro Extended API
     const balance = await getBalance(address);
     
     if (balance !== null) {
+        // Obtener precio STX en USD
         const priceUSD = await getSTXPriceUSD();
         const balanceUSD = priceUSD ? (balance * priceUSD).toFixed(2) : 'N/A';
         
@@ -38,7 +39,7 @@ document.getElementById('check-balance').addEventListener('click', async functio
     }
 });
 
-// Allow Enter key to trigger search
+// Activar búsqueda con Enter
 document.getElementById('stx-address').addEventListener('keypress', function (event) {
     if (event.key === 'Enter') {
         document.getElementById('check-balance').click();
@@ -48,6 +49,8 @@ document.getElementById('stx-address').addEventListener('keypress', function (ev
 // ------------------------------
 // Funciones de API
 // ------------------------------
+
+// Balance STX desde Hiro Extended API
 async function getBalance(address) {
     const url = `https://api.hiro.so/extended/v1/address/${address}/balances`;
     try {
@@ -55,9 +58,8 @@ async function getBalance(address) {
         if (!response.ok) throw new Error('Address not found');
         const data = await response.json();
 
-        // balance incluso si es 0
         if (data.stx && data.stx.balance !== undefined) {
-            return Number(data.stx.balance) / 1_000_000;
+            return Number(data.stx.balance) / 1_000_000; // Convertir microSTX a STX
         }
     } catch (error) {
         console.error('Error getting balance:', error);
@@ -65,18 +67,21 @@ async function getBalance(address) {
     return null;
 }
 
+// Obtener precio STX en USD desde CoinGecko (compatible con IDs "stacks" y "blockstack")
 async function getSTXPriceUSD() {
-    const url = 'https://api.coingecko.com/api/v3/simple/price?ids=stacks&vs_currencies=usd';
+    const url = 'https://api.coingecko.com/api/v3/simple/price?ids=stacks,blockstack&vs_currencies=usd';
     try {
         const response = await fetch(url);
         const data = await response.json();
-        return data.stacks?.usd || null;
+        console.log('STX price API data:', data); // Para depuración
+        return data.stacks?.usd || data.blockstack?.usd || null;
     } catch (error) {
         console.error('Error getting STX price:', error);
         return null;
     }
 }
 
+// Resolver BNS usando proxy de Hiro
 async function getStacksAddressFromBNS(bnsName) {
     const url = `/api/hiro-proxy?name=${bnsName}`;
     try {
