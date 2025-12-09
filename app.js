@@ -1,101 +1,102 @@
-// --- Resolver nombres .btc a dirección STX ---
-async function resolveBNS(name) {
-    const url = `https://stacks-node-api.mainnet.stacks.co/v1/names/${name}`;
+document.addEventListener("DOMContentLoaded", () => {
+    const input = document.getElementById("stx-address");
+    const button = document.getElementById("check-balance");
+    const balanceText = document.getElementById("balance");
+    const balanceUSD = document.getElementById("balance-usd");
+    const spinner = document.getElementById("spinner");
 
-    try {
-        const res = await fetch(url);
-        if (!res.ok) return null;
-
-        const data = await res.json();
-        return data.address || null;
-
-    } catch (err) {
-        console.error("Error resolving BNS:", err);
-        return null;
-    }
-}
-
-// --- Obtener precio STX → USD ---
-async function getSTXPriceUSD() {
-    const url = "https://api.coingecko.com/api/v3/simple/price?ids=stacks&vs_currencies=usd";
-
-    try {
-        const response = await fetch(url, {
-            headers: { "accept": "application/json" }
-        });
-
-        const data = await response.json();
-
-        if (data.stacks && data.stacks.usd) {
-            return data.stacks.usd;
-        } else {
-            console.error("Precio no disponible:", data);
+    // --- Resolver nombre .btc a dirección ---
+    async function resolveBNS(name) {
+        try {
+            const res = await fetch(`https://stacks-node-api.mainnet.stacks.co/v1/names/${name}`);
+            const data = await res.json();
+            return data.address || null;
+        } catch (e) {
+            console.error("Error resolving BNS:", e);
             return null;
         }
-
-    } catch (error) {
-        console.error("Error getting STX price:", error);
-        return null;
     }
-}
 
-// --- Obtener balance STX de una dirección ---
-async function getSTXBalance(address) {
-    const url = `https://stacks-node-api.mainnet.stacks.co/extended/v1/address/${address}/balances`;
+    // --- Obtener precio del STX en USD ---
+    async function getSTXPrice() {
+        try {
+            const res = await fetch(
+                "https://api.coingecko.com/api/v3/simple/price?ids=stacks&vs_currencies=usd"
+            );
+            const data = await res.json();
 
-    try {
-        const res = await fetch(url);
-        if (!res.ok) return null;
+            if (data?.stacks?.usd) return data.stacks.usd;
 
-        const data = await res.json();
-        return data.stx.balance / 1_000_000; // microSTX → STX
-
-    } catch (err) {
-        console.error("Error fetching STX balance:", err);
-        return null;
-    }
-}
-
-// --- Lógica del botón ---
-document.getElementById("checkBalanceBtn").addEventListener("click", async () => {
-    const input = document.getElementById("addressInput").value.trim();
-    const resultSTX = document.getElementById("stxBalance");
-    const resultUSD = document.getElementById("usdBalance");
-
-    resultSTX.textContent = "Loading...";
-    resultUSD.textContent = "";
-
-    let address = input;
-
-    // Si termina en .btc → resolverlo
-    if (input.endsWith(".btc")) {
-        resultSTX.textContent = "Resolving .btc name...";
-        address = await resolveBNS(input);
-        if (!address) {
-            resultSTX.textContent = "Error: Name not found.";
-            return;
+            return null;
+        } catch (e) {
+            console.error("Error fetching price:", e);
+            return null;
         }
     }
 
-    // Obtener saldo STX
-    const balanceSTX = await getSTXBalance(address);
-    if (balanceSTX === null) {
-        resultSTX.textContent = "Unable to retrieve balance.";
-        return;
+    // --- Obtener balance STX de dirección ---
+    async function getSTXBalance(address) {
+        try {
+            const res = await fetch(
+                `https://stacks-node-api.mainnet.stacks.co/extended/v1/address/${address}/balances`
+            );
+            const data = await res.json();
+
+            if (!data?.stx?.balance) return null;
+
+            return data.stx.balance / 1_000_000; // microstacks → STX
+        } catch (e) {
+            console.error("Balance fetch error:", e);
+            return null;
+        }
     }
 
-    // Mostrar balance STX
-    resultSTX.textContent = `${balanceSTX.toFixed(6)} STX`;
+    // --- Acción al pulsar el botón ---
+    button.addEventListener("click", async () => {
+        let address = input.value.trim();
 
-    // Obtener precio STX → USD
-    const priceUSD = await getSTXPriceUSD();
+        if (!address) {
+            alert("Please enter a Stacks address or .btc name.");
+            return;
+        }
 
-    if (priceUSD === null) {
-        resultUSD.textContent = "≈ N/A USD";
-        return;
-    }
+        // Mostrar cargando
+        balanceText.textContent = "---";
+        balanceUSD.textContent = "---";
+        spinner.classList.remove("hidden");
 
-    // Calcular valor en USD
-    const totalUSD = balanceSTX * priceUSD;
-    resultUSD.textContent = `≈ ${totalUSD.toFixed(2)} USD`;
+        // Resolver BNS si termina en .btc
+        if (address.endsWith(".btc")) {
+            const resolved = await resolveBNS(address.toLowerCase());
+            if (!resolved) {
+                spinner.classList.add("hidden");
+                balanceText.textContent = "Invalid .btc name";
+                return;
+            }
+            address = resolved;
+        }
+
+        // Obtener balance STX
+        const stxBalance = await getSTXBalance(address);
+        if (stxBalance === null) {
+            spinner.classList.add("hidden");
+            balanceText.textContent = "Error fetching balance";
+            return;
+        }
+
+        balanceText.textContent = `${stxBalance.toFixed(6)} STX`;
+
+        // Obtener precio STX → USD
+        const price = await getSTXPrice();
+        if (price === null) {
+            spinner.classList.add("hidden");
+            balanceUSD.textContent = "≈ N/A USD";
+            return;
+        }
+
+        const totalUSD = stxBalance * price;
+        balanceUSD.textContent = `≈ ${totalUSD.toFixed(2)} USD`;
+
+        spinner.classList.add("hidden");
+    });
 });
