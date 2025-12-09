@@ -10,6 +10,9 @@ function log(...args) {
     if (DEBUG) console.log('[DEBUG]', ...args);
 }
 
+// ------------------------------
+// Función principal
+// ------------------------------
 async function checkBalance() {
     const input = addressInput.value.trim();
     if (!input) {
@@ -61,6 +64,9 @@ async function checkBalance() {
     disableButton(false);
 }
 
+// ------------------------------
+// Helpers de UI
+// ------------------------------
 function displayBalance(balance, usd) {
     balanceEl.innerText = typeof balance === 'number' ? `${balance} STX` : balance;
     balanceUsdEl.innerText = usd ? `≈ ${usd} USD` : '';
@@ -89,25 +95,28 @@ function disableButton(disable) {
     }
 }
 
+// ------------------------------
 // Event listeners
+// ------------------------------
 checkBtn.addEventListener('click', checkBalance);
 addressInput.addEventListener('keypress', (event) => {
     if (event.key === 'Enter') checkBalance();
 });
 
 // ------------------------------
-// STX Balance
+// API calls
 // ------------------------------
 async function getBalance(address) {
-    const url = `https://stacks-node-api.mainnet.stacks.co/v2/accounts/${address}`;
+    const url = `https://api.stacks.co/extended/v1/address/${address}/balances`;
     try {
         const response = await fetch(url);
+        if (!response.ok) throw new Error('Address not found');
         const data = await response.json();
         log('Balance API data:', data);
 
-        // ✅ Mostrar balance incluso si es 0
-        if (data.balance !== undefined && data.balance !== null) {
-            return Number(data.balance) / 1_000_000;
+        // Mostrar balance incluso si es 0
+        if (data.stx && data.stx.balance !== undefined) {
+            return Number(data.stx.balance) / 1_000_000;
         }
     } catch (error) {
         console.error('Error getting balance:', error);
@@ -115,9 +124,6 @@ async function getBalance(address) {
     return null;
 }
 
-// ------------------------------
-// STX Price USD
-// ------------------------------
 async function getSTXPriceUSD() {
     const url = 'https://api.coingecko.com/api/v3/simple/price?ids=stacks&vs_currencies=usd';
     try {
@@ -131,9 +137,6 @@ async function getSTXPriceUSD() {
     }
 }
 
-// ------------------------------
-// BNS Resolver usando tu proxy
-// ------------------------------
 async function getStacksAddressFromBNS(bnsName) {
     const url = `/api/hiro-proxy?name=${bnsName}`;
     try {
