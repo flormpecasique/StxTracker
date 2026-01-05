@@ -39,6 +39,16 @@ Designed for simplicity and speed, StxTracker is ideal for users who want a quic
 
 ---
 
+## 🔐 Security Considerations
+
+- No private keys are stored
+- No wallet connection required
+- Public read-only APIs
+- User input validation
+
+---
+
+
 ## 🧑‍💻 Run Locally
 
 To run the project locally:
@@ -52,18 +62,5 @@ cd StxTracker
 
 # Open index.html in your browser
 # (or use a local server for dynamic API calls)
-
-
----
-
-## 🔐 Security Considerations
-
-- No private keys are stored
-- No wallet connection required
-- Public read-only APIs
-- User input validation
-
----
-
 
 
