@@ -52,3 +52,12 @@ cd StxTracker
 
 # Open index.html in your browser
 # (or use a local server for dynamic API calls)
+
+
+## 🔐 Security Considerations
+
+- No private keys are stored
+- No wallet connection required
+- Public read-only APIs
+- User input validation
+
