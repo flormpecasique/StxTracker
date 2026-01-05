@@ -7,8 +7,7 @@
 ## 📌 Overview
 
 **StxTracker** is a lightweight and user-friendly platform that allows anyone to **check the STX (Stacks token) balance** of a Stacks address instantly, and see its **equivalent value in USD** — without needing to use a blockchain explorer.  
-Designed for simplicity and speed, StxTracker is ideal for users who want a quick balance check without complexity. :contentReference[oaicite:1]{index=1}
-
+Designed for simplicity and speed, StxTracker is ideal for users who want a quick balance check without complexity. 
 Live demo: 🔗 https://stx-tracker.vercel.app/ 
 ---
 
