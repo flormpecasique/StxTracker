@@ -4,6 +4,9 @@
 ![License](https://img.shields.io/badge/license-MIT-lightgrey)
 ![Tech Stack](https://img.shields.io/badge/stack-JavaScript%20%7C%20HTML%20%7C%20CSS-blue)
 
+
+![Preview](/preview.jpeg)
+
 ## 📌 Overview
 
 **StxTracker** is a lightweight and user-friendly platform that allows anyone to **check the STX (Stacks token) balance** of a Stacks address instantly, and see its **equivalent value in USD** — without needing to use a blockchain explorer.  
