@@ -3,40 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STX Tracker</title>
+
+    <!-- SEO -->
+    <title>STX Tracker — Check Stacks & .btc BNS Balances</title>
+    <meta name="description" content="Free tool to check the STX balance of any Stacks address or .btc BNS name, with the live USD value.">
+    <link rel="canonical" href="https://stxtracker.vercel.app/">
+    <meta name="theme-color" content="#6a49e4">
+
+    <!-- Open Graph / social -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="STX Tracker — Check Stacks & .btc BNS Balances">
+    <meta property="og:description" content="Check the STX balance of any Stacks address or .btc BNS name, with live USD value.">
+    <meta property="og:image" content="/preview.jpeg">
+
+    <!-- Perf: pre-connect to the APIs the page will call -->
+    <link rel="preconnect" href="https://api.hiro.so" crossorigin>
+    <link rel="preconnect" href="https://api.binance.com" crossorigin>
+
+    <!-- Fonts: preconnect + non-blocking load -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style"
+          href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap"
+          media="print" onload="this.media='all'">
+    <noscript>
+        <link rel="stylesheet"
+              href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap">
+    </noscript>
+
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
+    <main class="container">
         <header>
             <h1>STX Tracker</h1>
             <p>Check Stacks Addresses and .btc BNS balances!</p>
         </header>
-        
-        <section class="input-section">
-            <input type="text" id="stx-address" placeholder="Enter your Stacks address or BNS name" />
-            <button id="check-balance">Check Balance</button>
+
+        <section class="input-section" aria-labelledby="input-heading">
+            <h2 id="input-heading" class="visually-hidden">Look up a balance</h2>
+            <label for="stx-address" class="visually-hidden">Stacks address or BNS name</label>
+            <input type="text" id="stx-address" name="stx-address"
+                   inputmode="text" autocomplete="off" spellcheck="false"
+                   placeholder="Enter your Stacks address or BNS name"
+                   aria-describedby="input-hint" />
+            <span id="input-hint" class="visually-hidden">
+                Enter a Stacks address or a name ending in .btc, then activate Check Balance.
+            </span>
+            <button id="check-balance" type="button">Check Balance</button>
         </section>
-        
-        <section class="results-section">
+
+        <section class="results-section" aria-labelledby="balance-heading">
             <div id="balance-container">
-                <h2>STX Balance</h2>
+                <h2 id="balance-heading">STX Balance</h2>
                 <div class="balance-wrapper">
                     <span id="balance">---</span>
-                    <div id="spinner" class="spinner hidden"></div>
+                    <div id="spinner" class="spinner hidden" role="status" aria-live="polite">
+                        <span class="visually-hidden">Loading balance…</span>
+                    </div>
                 </div>
-                <p id="balance-usd" class="balance-usd">---</p>
+                <p id="balance-usd" class="balance-usd" aria-live="polite">---</p>
             </div>
         </section>
-    </div>
+    </main>
 
     <footer>
         <p>&copy; <span id="year"></span> STX Balance by flor.btc | All rights reserved.</p>
     </footer>
 
-    <script src="app.js"></script>
-    <script>
-        document.getElementById('year').textContent = new Date().getFullYear();
-    </script>
+    <script src="app.js" defer></script>
 </body>
 </html>
