@@ -1,45 +1,64 @@
-document.getElementById('check-balance').addEventListener('click', async function () {
-    let input = document.getElementById('stx-address').value.trim();
+const $ = (id) => document.getElementById(id);
+
+const els = {
+    input:    $('stx-address'),
+    button:   $('check-balance'),
+    balance:  $('balance'),
+    usd:      $('balance-usd'),
+    spinner:  $('spinner'),
+    year:     $('year'),
+};
+
+// Año en el footer (sin <script> inline, mejor para CSP)
+if (els.year) els.year.textContent = new Date().getFullYear();
+
+function setLoading(isLoading) {
+    els.spinner.classList.toggle('hidden', !isLoading);
+    els.balance.classList.toggle('loading', isLoading);
+    els.button.disabled = isLoading;
+}
+
+async function handleCheck() {
+    const input = els.input.value.trim();
 
     if (!input) {
-        alert('Please enter a valid STX address or BNS name.');
+        els.balance.textContent = 'Please enter a valid STX address or BNS name.';
+        els.input.focus();
         return;
     }
 
-    // Limpiar resultados anteriores
-    document.getElementById('balance').innerText = 'Loading...';
-    document.getElementById('balance-usd').innerText = '';
-    
-    let address;
+    setLoading(true);
+    els.balance.textContent = 'Loading…';
+    els.usd.textContent = '';
 
-    if (input.endsWith('.btc')) {
-        address = await getStacksAddressFromBNS(input.toLowerCase());
-    } else {
-        address = input;
-    }
-    
-    if (!address) {
-        document.getElementById('balance').innerText = 'Invalid BNS name or address';
-        return;
-    }
+    try {
+        const address = input.toLowerCase().endsWith('.btc')
+            ? await getStacksAddressFromBNS(input.toLowerCase())
+            : input;
 
-    const balance = await getBalance(address);
-    
-    if (balance !== null) {
-        const priceUSD = await getSTXPriceUSD();
-        const balanceUSD = priceUSD ? (balance * priceUSD).toFixed(2) : 'N/A';
-        
-        document.getElementById('balance').innerText = `${balance} STX`;
-        document.getElementById('balance-usd').innerText = `≈ ${balanceUSD} USD`;
-    } else {
-        document.getElementById('balance').innerText = 'Unable to retrieve the balance.';
-    }
-});
+        if (!address) {
+            els.balance.textContent = 'Invalid BNS name or address';
+            return;
+        }
 
-document.getElementById('stx-address').addEventListener('keypress', function (event) {
-    if (event.key === 'Enter') {
-        document.getElementById('check-balance').click();
+        const balance = await getBalance(address);
+
+        if (balance !== null) {
+            const priceUSD = await getSTXPriceUSD();
+            const balanceUSD = priceUSD ? (balance * priceUSD).toFixed(2) : 'N/A';
+            els.balance.textContent = `${balance} STX`;
+            els.usd.textContent = `≈ ${balanceUSD} USD`;
+        } else {
+            els.balance.textContent = 'Unable to retrieve the balance.';
+        }
+    } finally {
+        setLoading(false);
     }
+}
+
+els.button.addEventListener('click', handleCheck);
+els.input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') handleCheck();
 });
 
 // Balance STX desde Hiro
@@ -49,7 +68,6 @@ async function getBalance(address) {
         const response = await fetch(url);
         if (!response.ok) throw new Error('Address not found');
         const data = await response.json();
-
         if (data.stx && data.stx.balance !== undefined) {
             return Number(data.stx.balance) / 1_000_000;
         }
@@ -59,22 +77,22 @@ async function getBalance(address) {
     return null;
 }
 
-// NUEVO — Precio STX USD desde Binance (funciona en navegador)
+// Precio STX USD desde Binance
 async function getSTXPriceUSD() {
     try {
-        const response = await fetch("https://api.binance.com/api/v3/ticker/price?symbol=STXUSDT");
+        const response = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=STXUSDT');
         const data = await response.json();
         return parseFloat(data.price);
     } catch (error) {
-        console.error("Error getting STX price:", error);
+        console.error('Error getting STX price:', error);
         return null;
     }
 }
 
+// Resolver nombre .btc vía proxy serverless
 async function getStacksAddressFromBNS(bnsName) {
-    const url = `/api/hiro-proxy?name=${bnsName}`;
     try {
-        const response = await fetch(url);
+        const response = await fetch(`/api/hiro-proxy?name=${encodeURIComponent(bnsName)}`);
         if (!response.ok) return null;
         const data = await response.json();
         return data.address || null;
