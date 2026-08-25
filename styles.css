@@ -5,7 +5,7 @@
     box-sizing: border-box;
 }
 
-/* Variables (movidas arriba para que estén disponibles desde el inicio) */
+/* Variables */
 :root {
     --violeta-principal: #6a49e4;
     --violeta-oscuro: #4a2c72;
@@ -70,7 +70,7 @@ header h1 {
 
 header p {
     font-size: 1.2rem;
-    color: #595959; /* Contraste AA sobre blanco (antes #6c6c6c fallaba texto grande fino) */
+    color: #595959; /* Contraste AA sobre blanco */
     margin-bottom: 30px;
 }
 
@@ -84,12 +84,20 @@ header p {
     width: 80%;
     border: 2px solid #e1e4e8;
     border-radius: 8px;
-    font-size: 1rem;
+    font-size: 16px; /* 16px evita el zoom automático de iOS al enfocar */
     margin-bottom: 20px;
     background-color: #fafafa;
 }
 
-/* Estilo del botón */
+#stx-address:focus {
+    border-color: var(--violeta-principal);
+    background-color: #fff;
+}
+
+/* ============================================
+   BOTÓN — un solo color de marca en todos los
+   estados. Nunca salta a gris.
+   ============================================ */
 #check-balance {
     padding: 12px 20px;
     font-size: 1rem;
@@ -98,23 +106,29 @@ header p {
     background-color: var(--violeta-principal);
     color: white;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s ease-in-out;
+    transition: background-color 0.2s ease, transform 0.15s ease, opacity 0.2s ease;
     font-weight: 600;
     margin-top: 10px;
 }
 
-/* Botón en estado hover — contraste corregido */
-#check-balance:hover {
+/* Hover: oscurece el violeta (mantiene texto blanco legible) */
+#check-balance:hover:not(:disabled) {
     background-color: var(--violeta-oscuro);
     transform: translateY(-2px);
 }
 
-/* Estilo del botón después de la consulta */
-#check-balance.after-query {
-    background-color: var(--gris-claro);
-    color: #333;
-    cursor: not-allowed;
-    pointer-events: none;
+/* Al mantener presionado: feedback táctil sutil */
+#check-balance:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+/* Estado de carga / deshabilitado: mismo violeta, solo atenuado */
+#check-balance:disabled {
+    background-color: var(--violeta-principal);
+    color: white;
+    opacity: 0.65;
+    cursor: progress;
+    transform: none;
 }
 
 /* Contenedor de resultados */
@@ -146,7 +160,7 @@ header p {
 footer {
     text-align: center;
     font-size: 0.9rem;
-    color: #6c757d; /* Antes #CBD5E0: ilegible sobre fondo claro. Ahora cumple AA */
+    color: #6c757d; /* Contraste AA sobre fondo claro */
     padding: 30px 0;
     width: 100%;
     margin-top: 20px;
@@ -195,7 +209,7 @@ p, .descripcion {
 
     #stx-address {
         width: 100%;
-        font-size: 0.9rem;
+        font-size: 16px; /* Mantener 16px para evitar el zoom de iOS */
     }
 
     #check-balance {
@@ -226,7 +240,7 @@ p, .descripcion {
     }
 
     #stx-address {
-        font-size: 0.9rem;
+        font-size: 16px; /* Mantener 16px para evitar el zoom de iOS */
     }
 
     #check-balance {

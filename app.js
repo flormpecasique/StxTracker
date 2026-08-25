@@ -1,13 +1,16 @@
 const $ = (id) => document.getElementById(id);
 
 const els = {
-    input:    $('stx-address'),
-    button:   $('check-balance'),
-    balance:  $('balance'),
-    usd:      $('balance-usd'),
-    spinner:  $('spinner'),
-    year:     $('year'),
+    input:   $('stx-address'),
+    button:  $('check-balance'),
+    balance: $('balance'),
+    usd:     $('balance-usd'),
+    spinner: $('spinner'),
+    year:    $('year'),
 };
+
+// Texto original del botón, para restaurarlo después
+const BTN_DEFAULT_LABEL = els.button.textContent;
 
 // Año en el footer (sin <script> inline, mejor para CSP)
 if (els.year) els.year.textContent = new Date().getFullYear();
@@ -16,6 +19,8 @@ function setLoading(isLoading) {
     els.spinner.classList.toggle('hidden', !isLoading);
     els.balance.classList.toggle('loading', isLoading);
     els.button.disabled = isLoading;
+    // El botón conserva su color; solo cambia el texto para dar feedback claro
+    els.button.textContent = isLoading ? 'Checking…' : BTN_DEFAULT_LABEL;
 }
 
 async function handleCheck() {
@@ -23,6 +28,7 @@ async function handleCheck() {
 
     if (!input) {
         els.balance.textContent = 'Please enter a valid STX address or BNS name.';
+        els.usd.textContent = '';
         els.input.focus();
         return;
     }
