@@ -5,9 +5,17 @@
     box-sizing: border-box;
 }
 
+/* Variables (movidas arriba para que estén disponibles desde el inicio) */
+:root {
+    --violeta-principal: #6a49e4;
+    --violeta-oscuro: #4a2c72;
+    --gris-suave: #6c6c6c;
+    --gris-claro: #e1e4e8;
+}
+
 /* Fondo y diseño general */
 body {
-    font-family: 'Roboto', sans-serif; 
+    font-family: 'Roboto', system-ui, -apple-system, Segoe UI, sans-serif;
     background-color: #f1f3f6;
     color: #333;
     display: flex;
@@ -15,15 +23,28 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    padding: 40px 0;
+    padding: 40px 16px;
 }
 
-/* Definimos el violeta principal para usarse en toda la página */
-:root {
-    --violeta-principal: #6a49e4;
-    --violeta-oscuro: #4a2c72;
-    --gris-suave: #6c6c6c;
-    --gris-claro: #e1e4e8;
+/* Utilidad accesible: oculta visualmente pero deja el texto para lectores de pantalla */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+/* Foco visible para navegación por teclado */
+:focus-visible {
+    outline: 3px solid var(--violeta-principal);
+    outline-offset: 2px;
+    border-radius: 4px;
 }
 
 /* Contenedor principal */
@@ -49,7 +70,7 @@ header h1 {
 
 header p {
     font-size: 1.2rem;
-    color: #6c6c6c;
+    color: #595959; /* Contraste AA sobre blanco (antes #6c6c6c fallaba texto grande fino) */
     margin-bottom: 30px;
 }
 
@@ -82,9 +103,9 @@ header p {
     margin-top: 10px;
 }
 
-/* Botón en estado hover */
+/* Botón en estado hover — contraste corregido */
 #check-balance:hover {
-    background-color: rgba(224, 228, 232, 0.6);
+    background-color: var(--violeta-oscuro);
     transform: translateY(-2px);
 }
 
@@ -125,7 +146,7 @@ header p {
 footer {
     text-align: center;
     font-size: 0.9rem;
-    color: #CBD5E0; /* Gris claro */
+    color: #6c757d; /* Antes #CBD5E0: ilegible sobre fondo claro. Ahora cumple AA */
     padding: 30px 0;
     width: 100%;
     margin-top: 20px;
@@ -149,15 +170,15 @@ footer a:hover {
 
 /* Estilo para la descripción */
 p, .descripcion {
-    font-size: 0.8em;  /* Un tamaño más pequeño que antes, pero aún legible */
-    line-height: 1.6; /* Manteniendo buen espaciado entre líneas */
-    color: #666;  /* Suavizamos el color para mantener la jerarquía visual */
+    font-size: 0.8em;
+    line-height: 1.6;
+    color: #595959; /* Contraste AA */
 }
 
 /* Media Queries para responsividad */
 @media (max-width: 768px) {
     body {
-        padding: 20px 0;
+        padding: 20px 16px;
     }
 
     .container {
@@ -165,16 +186,16 @@ p, .descripcion {
     }
 
     header h1 {
-        font-size: 2rem;  /* Reducimos el tamaño del título */
+        font-size: 2rem;
     }
 
     header p {
-        font-size: 1rem;  /* Reducimos el tamaño del texto */
+        font-size: 1rem;
     }
 
     #stx-address {
         width: 100%;
-        font-size: 0.9rem;  /* Ajustamos el tamaño de fuente */
+        font-size: 0.9rem;
     }
 
     #check-balance {
@@ -187,21 +208,21 @@ p, .descripcion {
     }
 
     #balance {
-        font-size: 1.8rem;  /* Reducimos el tamaño del balance */
+        font-size: 1.8rem;
     }
 
     .balance-usd {
-        font-size: 1.1rem;  /* Ajustamos el tamaño en USD */
+        font-size: 1.1rem;
     }
 }
 
 @media (max-width: 480px) {
     header h1 {
-        font-size: 1.5rem;  /* Título más pequeño en móviles */
+        font-size: 1.5rem;
     }
 
     header p {
-        font-size: 0.9rem;  /* Texto aún más pequeño */
+        font-size: 0.9rem;
     }
 
     #stx-address {
@@ -213,10 +234,9 @@ p, .descripcion {
     }
 
     .container {
-        max-width: 100%;  /* Aseguramos que el contenedor sea flexible */
+        max-width: 100%;
     }
 }
-
 
 /* Spinner */
 .spinner {
@@ -247,4 +267,21 @@ p, .descripcion {
 
 #balance-container span#balance.loading {
     color: #aaa;
+}
+
+/* Respeta a quienes reducen movimiento */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .spinner {
+        animation: none;
+        border-top-color: #f3f3f3;
+    }
 }
