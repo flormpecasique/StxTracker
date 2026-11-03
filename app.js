@@ -9,17 +9,14 @@ const els = {
     year:    $('year'),
 };
 
-// Texto original del botón, para restaurarlo después
 const BTN_DEFAULT_LABEL = els.button.textContent;
 
-// Año en el footer (sin <script> inline, mejor para CSP)
 if (els.year) els.year.textContent = new Date().getFullYear();
 
 function setLoading(isLoading) {
     els.spinner.classList.toggle('hidden', !isLoading);
     els.balance.classList.toggle('loading', isLoading);
     els.button.disabled = isLoading;
-    // El botón conserva su color; solo cambia el texto para dar feedback claro
     els.button.textContent = isLoading ? 'Checking…' : BTN_DEFAULT_LABEL;
 }
 
@@ -67,9 +64,9 @@ els.input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') handleCheck();
 });
 
-// Balance STX desde Hiro
+// Balance STX — through our serverless proxy so the Hiro API key stays hidden
 async function getBalance(address) {
-    const url = `https://api.hiro.so/extended/v1/address/${address}/balances`;
+    const url = `/api/hiro-proxy?balance=${encodeURIComponent(address)}`;
     try {
         const response = await fetch(url);
         if (!response.ok) throw new Error('Address not found');
@@ -83,7 +80,7 @@ async function getBalance(address) {
     return null;
 }
 
-// Precio STX USD desde Binance
+// STX price in USD from Binance (public, no key needed)
 async function getSTXPriceUSD() {
     try {
         const response = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=STXUSDT');
@@ -95,7 +92,7 @@ async function getSTXPriceUSD() {
     }
 }
 
-// Resolver nombre .btc vía proxy serverless
+// Resolve .btc name through our serverless proxy
 async function getStacksAddressFromBNS(bnsName) {
     try {
         const response = await fetch(`/api/hiro-proxy?name=${encodeURIComponent(bnsName)}`);
